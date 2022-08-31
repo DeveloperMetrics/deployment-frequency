@@ -20,8 +20,10 @@ runs:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-        echo "Hello ${{ github.repository }}."
-        echo "Hello ${{ inputs.workflows }}."
+        $ownerRepo = "${{ github.repository }}" -split '/'
+        $workflowsArray = $inputs.workflows -split ','
+        echo "Hello $ownerRepo[0] - $ownerRepo[1]."
+        echo "Hello $workflowsArray[0] (length: $workflowsArray.Length)."
         echo "Hello ${{ inputs.default-branch }}."
         echo "Hello ${{ inputs.number-of-days }}."
      

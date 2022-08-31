@@ -9,8 +9,6 @@ A GitHub Action to roughly calculate DORA deployment frequency
 - Open question: what if there are multiple workflows?
 
 ## Inputs:
-Workflows: required. string array of the name of the workflows to process
-Org/Owner: will use environment variables
-Repo: will use environment variables
-Default branch: optional, defaults to main. 
-Number of days (optional- defaults to 30)
+- `workflows`: required. Name of the workflows to process. Multiple workflows should be separated by `,`
+- `default-branch`: optional, defaults to main 
+- `number-of-days`: optional, defaults to 30 (days)

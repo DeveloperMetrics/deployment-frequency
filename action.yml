@@ -20,8 +20,8 @@ runs:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-        echo Hello $GITHUB_REPOSITORY.
-        echo Hello ${{ inputs.workflows }}.
-        echo Hello ${{ inputs.default-branch }}.
-        echo Hello ${{ inputs.number-of-days }}.
+        echo Hello "$GITHUB_REPOSITORY ."
+        echo Hello "${{ inputs.workflows }}."
+        echo Hello "${{ inputs.default-branch }}."
+        echo Hello "${{ inputs.number-of-days }}."
      

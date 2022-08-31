@@ -1,4 +1,4 @@
-# deployment-frequency
+# Deployment Frequency
 A GitHub Action to roughly calculate DORA deployment frequency
 
 ## Calculation: 

@@ -1,7 +1,9 @@
 name: 'DORA deployment frequency'
 description: 'A GitHub Action to roughly calculate DORA deployment frequency'
 inputs:
-  workflows: required. string array of the name of the workflows to process
+  workflows: # required. string array of the name of the workflows to process
+    description: 'the workflow name that is being scanned. Separate multiple workflows with commas'
+    required: true
   #- Org/Owner: will use environment variables
   #- Repo: will use environment variables 
   default-branch:  # optional, defaults to main
@@ -15,5 +17,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.number-of-days }}.
+    - run: |
+        echo Hello ${{ inputs.workflows }}.
+        echo Hello ${{ inputs.default-branch }}.
+        echo Hello ${{ inputs.number-of-days }}.
       shell: powershellcore

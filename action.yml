@@ -4,8 +4,10 @@ inputs:
   workflows: # required. string array of the name of the workflows to process
     description: 'the workflow name that is being scanned. Separate multiple workflows with commas'
     required: true
-  #- Org/Owner: will use environment variables
-  #- Repo: will use environment variables 
+  owner-repo: # optional, defaults to current owner/repo
+    description: 'the target org/repo or owner/repo to run the calculation on'
+    required: true
+    default: "${{ github.repository }}"
   default-branch:  # optional, defaults to main
     description: 'branch that is deploying to production'
     required: true
@@ -22,7 +24,9 @@ runs:
       run: |
         #==========================================
         #Input processing
-        $ownerRepo = "${{ github.repository }}" -split '/'
+        #$ownerRepo = "${{ github.repository }}" -split '/'
+        Write-Output "Owner/Repo: $ownerRepo"
+        $ownerRepo = "${{inputs.owner-repo }}" -split '/'
         $owner = $ownerRepo[0]
         $repo = $ownerRepo[1]
         $workflowsArray = $inputs.workflows -split ','

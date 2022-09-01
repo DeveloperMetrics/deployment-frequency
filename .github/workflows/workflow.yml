@@ -10,27 +10,65 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs: # https://stackoverflow.com/questions/59175332/using-output-from-a-previous-job-in-a-new-one-in-a-github-action
+      Version: ${{ steps.gitversion.outputs.SemVer }}
+      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}  
 
-    steps:
+    steps:    
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 #fetch-depth is needed for GitVersion
+          #Install and calculate the new version with GitVersion          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.13
+        with:
+          versionSpec: 5.x
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.9.13
+        id: gitversion # step id used as reference for output values
+      - name: Display GitVersion outputs
+        run: |
+          echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
+          echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
+          
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
+        uses: samsmithnz/deployment-frequency@1.0.0
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
-        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
+        uses: samsmithnz/deployment-frequency@1.0.0
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
-        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
+        uses: samsmithnz/deployment-frequency@1.0.0
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
       - name: Test elite repo
-        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
+        uses: samsmithnz/deployment-frequency@1.0.0
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           
+  releaseAction:
+    runs-on: ubuntu-latest
+    needs: 
+    - build
+    #if: github.ref == 'refs/heads/main'      
+    steps:
+    - name: Display GitVersion outputs
+      run: |
+        echo "Version: ${{ needs.build.outputs.Version }}" 
+        echo "CommitsSinceVersionSource: ${{ needs.build.outputs.CommitsSinceVersionSource }}" 
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only create a release if there has been a commit/version change
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ needs.build.outputs.Version }}
+        release_name: Release ${{ needs.build.outputs.Version }} 

@@ -13,12 +13,11 @@ jobs:
 
     steps:
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@MovingPSToNewFile
+        uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
         uses: samsmithnz/deployment-frequency@main
-        if: 0 == 1
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
@@ -26,13 +25,11 @@ jobs:
           number-of-days: 30
       - name: Test no workflow
         uses: samsmithnz/deployment-frequency@main
-        if: 0 == 1
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
       - name: Test elite repo
         uses: samsmithnz/deployment-frequency@main
-        if: 0 == 1
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'

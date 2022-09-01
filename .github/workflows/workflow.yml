@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@MovingPSToNewFile
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments

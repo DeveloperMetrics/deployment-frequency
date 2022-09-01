@@ -8,7 +8,7 @@
 Param(
     [string] $ownerRepo,
     [string] $workflows,
-    [switch] $branch,
+    [string] $branch,
     [Int32] $numberOfDays
 )
 

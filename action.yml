@@ -25,7 +25,7 @@ runs:
         #==========================================
         #Input processing
         #$ownerRepo = "${{ github.repository }}" -split '/'
-        Write-Output "Owner/Repo: $ownerRepo"
+        Write-Output "Owner/Repo: ${{inputs.owner-repo }}"
         $ownerRepo = "${{inputs.owner-repo }}" -split '/'
         $owner = $ownerRepo[0]
         $repo = $ownerRepo[1]

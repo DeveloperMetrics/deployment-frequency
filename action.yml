@@ -29,7 +29,7 @@ runs:
         $owner = $ownerRepo[0]
         $repo = $ownerRepo[1]
         Write-Output "Owner/Repo: $owner/$repo"
-        $workflowsArray = ${{ inputs.workflows }} -split ','
+        $workflowsArray = "${{ inputs.workflows }}" -split ','
         Write-Output "Workflows: $($workflowsArray[0])"
         $branch = "${{ inputs.default-branch }}"
         Write-Output "Branch: $branch"

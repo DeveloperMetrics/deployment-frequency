@@ -12,3 +12,21 @@ A GitHub Action to roughly calculate DORA deployment frequency
 - `workflows`: required. Name of the workflows to process. Multiple workflows should be separated by `,`
 - `default-branch`: optional, defaults to main 
 - `number-of-days`: optional, defaults to 30 (days)
+
+To test the current repo (same as where the action runs)
+```
+      - uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'CI'
+```
+
+To test another repo, with all arguments
+```
+      - name: Test another repo
+        uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'CI/CD'
+          owner-repo: 'samsmithnz/DevOpsMetrics'
+          default-branch: 'main'
+          number-of-days: 30
+```

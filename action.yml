@@ -30,8 +30,11 @@ runs:
         $owner = $ownerRepo[0]
         $repo = $ownerRepo[1]
         $workflowsArray = $inputs.workflows -split ','
+        Write-Output "Workflows: $workflowsArray"
         $branch = "${{ inputs.default-branch }}"
-        $numberofDays = ${{ inputs.number-of-days }}
+        Write-Output "Branch: $branch"
+        $numberOfDays = ${{ inputs.number-of-days }}        
+        Write-Output "Number of days: $numberOfDays"
      
         #==========================================
         #Get workflow definitions from github

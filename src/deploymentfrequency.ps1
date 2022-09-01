@@ -18,7 +18,7 @@ $ownerRepoArray = $ownerRepo -split '/'
 $owner = $ownerRepoArray[0]
 $repo = $ownerRepoArray[1]
 Write-Output "Owner/Repo: $owner/$repo"
-$workflowsArray = workflows -split ','
+$workflowsArray = $workflows -split ','
 Write-Output "Workflows: $($workflowsArray[0])"
 Write-Output "Branch: $branch"
 $numberOfDays = $numberOfDays        

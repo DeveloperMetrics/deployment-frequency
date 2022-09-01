@@ -22,8 +22,8 @@ runs:
       run: |
         $ownerRepo = "${{ github.repository }}" -split '/'
         $workflowsArray = $inputs.workflows -split ','
-        echo "Hello $ownerRepo[0] - $ownerRepo[1]."
-        echo "Hello $workflowsArray[0] (length: $workflowsArray.Length)."
+        echo "Hello $ownerRepo[0] - $ownerRepo[1]"
+        echo "Hello $workflowsArray[0] (length: $($workflowsArray.Length))."
         echo "Hello ${{ inputs.default-branch }}."
         echo "Hello ${{ inputs.number-of-days }}."
      

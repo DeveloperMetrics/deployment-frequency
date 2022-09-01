@@ -119,27 +119,27 @@ elseif ($deploymentsPerDay -le $everySixMonthsDeployment)
 #Calculate metric and unit
 if ($deploymentsPerDay -gt $dailyDeployment) 
 {
-    $displayMetric = $deploymentsPerDay
+    $displayMetric = [math]::Round($deploymentsPerDay,2)
     $displayUnit = "per day"
 }
 elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $weeklyDeployment)
 {
-    $displayMetric = $deploymentsPerDay * 7
+    $displayMetric = [math]::Round($deploymentsPerDay * 7,2)
     $displayUnit = "times per week"
 }
 elseif ($deploymentsPerDay -lt $weeklyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
 {
-    $displayMetric = $deploymentsPerDay * 30
+    $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
     $displayUnit = "times per month"
 }
 elseif ($deploymentsPerDay -lt $monthlyDeployment -and $deploymentsPerDay -gt $yearlyDeployment)
 {
-    $displayMetric = $deploymentsPerDay * 30
+    $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
     $displayUnit = "times per month"
 }
 elseif ($deploymentsPerDay -le $yearlyDeployment)
 {
-    $displayMetric = $deploymentsPerDay * 365
+    $displayMetric = [math]::Round($deploymentsPerDay * 365,2)
     $displayUnit = "times per year"
 }
 

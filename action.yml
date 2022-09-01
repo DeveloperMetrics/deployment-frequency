@@ -23,5 +23,7 @@ runs:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
+         cd src
+         ls
          ./src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch = "${{ inputs.default-branch }}" -numberOfDays = ${{ inputs.number-of-days }} 
         

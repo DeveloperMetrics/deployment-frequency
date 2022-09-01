@@ -66,6 +66,7 @@ runs:
         #==========================================
         #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
         $dateList = @()
+        $completedDateList  = @()
 
         #For each workflow id, get the last 100 workflows from github
         Foreach ($workflowId in $workflowIds){
@@ -81,7 +82,8 @@ runs:
                     #Write-Output "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
                     $buildTotal++       
                     #get the workflow start and end time            
-                    $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}     
+                    $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}
+                    $completedDateList += $run.updated_at.ToString('dd-MM-yyyy')
                 }
             }
         }
@@ -90,10 +92,12 @@ runs:
         #==========================================
         #Calculate deployments per day
         $deploymentsPerDay = 0
+        #Calculate unique dates deployment occurred
+        $completedDateList = $completedDateList | Sort-Object | Get-Unique  -AsString
 
-        if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+        if ($completedDateList.Count -gt 0 -and $numberOfDays -gt 0)
         {
-            $deploymentsPerDay = $dateList.Count / $numberOfDays
+            $deploymentsPerDay = $completedDateList.Count / $numberOfDays
         }
 
 

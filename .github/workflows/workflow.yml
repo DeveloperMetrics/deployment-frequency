@@ -12,8 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: samsmithnz/deployment-frequency@main
+      - name: Test this repo
+        uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'CI'
+      - name: Test another repo
+        uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'

@@ -13,23 +13,23 @@ jobs:
 
     steps:
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
       - name: Test elite repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@0.9.0-PullRequest0003.49
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'

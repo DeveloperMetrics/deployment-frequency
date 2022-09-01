@@ -19,7 +19,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    ${{ github.workspace }}/
+    - uses: actions/checkout@v3
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |

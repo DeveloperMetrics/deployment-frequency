@@ -16,11 +16,13 @@ jobs:
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI'
-      - name: Test another repo
+      - name: Test another repo with all arguments
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
+          default-branch: 'main'
+          number-of-days: 30
       - name: Test no workflow
         uses: samsmithnz/deployment-frequency@main
         with:

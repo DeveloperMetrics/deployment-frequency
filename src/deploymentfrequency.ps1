@@ -24,10 +24,20 @@ Write-Output "Branch: $branch"
 $numberOfDays = $numberOfDays        
 Write-Output "Number of days: $numberOfDays"
 
+#Create encrpyted security token
+$base64AuthInfo = $null #[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$pat"))
+
 #==========================================
 #Get workflow definitions from github
 $uri = "https://api.github.com/repos/$owner/$repo/actions/workflows"
-$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
+if ($base64AuthInfo -eq $null)
+{
+    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
+}
+else
+{
+    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
+}
 
 #==========================================
 #Extract workflow ids from the definitions, using the array of names. Number of Ids should == number of workflow names

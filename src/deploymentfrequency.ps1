@@ -38,48 +38,29 @@ function Main ([string] $ownerRepo,
     Write-Output "Branch: $branch"
     $numberOfDays = $numberOfDays        
     Write-Output "Number of days: $numberOfDays"
-    function3
 
     #==========================================
-    #Create encrpyted security token
-    if ([String]::IsNullOrEmpty($patToken) -eq $false)
-    {
-        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$authToken"))
-        Write-Output "Auth token: not null"
-    }
-    else
-    {
-        $base64AuthInfo = $null
-        Write-Output "Auth token: null"
-    }
-
-
+    # Get authorization headers
+    Write-Output "Getting auth with $ghPatToken & $ghActionsToken"
+    $authHeader = GetAuthHeader($ghPatToken, $ghActionsToken)
 
     #==========================================
     #Get workflow definitions from github
     $uri = "https://api.github.com/repos/$owner/$repo/actions/workflows"
-    #if ($authToken -ne $null)
-    #{
-        #No authenication
-        $uri
-        $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
-    #}
-    #else
-    if (1 -eq 0)
+    if ($authHeader -ne $null)
     {
-        if ($ghToken -ne $null)
-        {
-
-        }
-        else
-        {
-            $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
-            $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
-
-        }
+        #No authenication
+        Write-Output "No authenication"
+        $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
+    }
+    else
+    {
+        #there is authenication
+        Write-Output "There is authenication"
+        #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
+        #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }
 
-    #==========================================
     #Extract workflow ids from the definitions, using the array of names. Number of Ids should == number of workflow names
     $workflowIds = [System.Collections.ArrayList]@()
     Foreach ($workflow in $workflowsResponse.workflows){
@@ -196,9 +177,27 @@ function Main ([string] $ownerRepo,
     Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
 }
 
-function function3 {
-    Write-Output "function 3 is executing"
+function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
+    Write-Output "GetAuthHeader function is executing with $ghPatToken and $ghActionsToken"
+
+    $authHeader = $null
+
+    #Create encrpyted security token
+    if ([String]::IsNullOrEmpty($patToken) -eq $false)
+    {
+        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$authToken"))
+        @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+        Write-Output "Auth token: not null"
+    }
+    else
+    {
+        $base64AuthInfo = $null
+        Write-Output "Auth token: null"
+    }
+
+    return $authHeader
 }
 
+cls
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays
 #main -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'CI' -branch 'Main' -numberOfDays 30

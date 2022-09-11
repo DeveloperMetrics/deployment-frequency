@@ -11,8 +11,8 @@ Param(
     [string] $workflows,
     [string] $branch,
     [Int32] $numberOfDays,
-    [string] $ghPatToken,
-    [string] $ghActionsToken#,
+    [string] $ghPatToken = $null,
+    [string] $ghActionsToken = $null#,
     #[string] $ghAppToken 
 )
 
@@ -41,22 +41,26 @@ function Main ([string] $ownerRepo,
 
     #==========================================
     # Get authorization headers
-    Write-Output "Getting auth with $ghPatToken & $ghActionsToken"
     $authHeader = GetAuthHeader($ghPatToken, $ghActionsToken)
-
+ 
     #==========================================
     #Get workflow definitions from github
     $uri = "https://api.github.com/repos/$owner/$repo/actions/workflows"
-    if ($authHeader -ne $null)
+    if (!$authHeader)
     {
-        #No authenication
-        Write-Output "No authenication"
+        #No authentication
+        Write-Output "No authentication"
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
     }
     else
     {
-        #there is authenication
-        Write-Output "There is authenication"
+        #there is authentication
+        if (![string]::IsNullOrEmpty($ghPatToken))
+        {
+            Write-Output "Authentication detected: PAT TOKEN"  
+        }      
+        $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)} -ErrorAction Stop 
+        #$workflowsResponse
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }
@@ -90,7 +94,20 @@ function Main ([string] $ownerRepo,
     Foreach ($workflowId in $workflowIds){
         #Get workflow definitions from github
         $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100"
-        $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -ErrorAction Stop
+        $uri3 = "https://api.github.com/rate_limit"
+        if (!$authHeader)
+        {
+            $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -ErrorAction Stop
+            $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -ErrorAction Stop
+        }
+        else
+        {
+            $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)} -ErrorAction Stop -Verbose          
+            $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)}  -ErrorAction Stop
+        }
+        
+        #echo $rateLimitResponse
+        Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
         $buildTotal = 0
         Foreach ($run in $workflowRunsResponse.workflow_runs){
@@ -104,6 +121,19 @@ function Main ([string] $ownerRepo,
             }
         }
     }
+
+    #==========================================
+    #Show current rate limit
+    $uri3 = "https://api.github.com/rate_limit"
+    if (!$authHeader)
+    {
+        $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -ErrorAction Stop
+    }
+    else
+    {
+        $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)}  -ErrorAction Stop
+    }    
+    Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
 
     #==========================================
@@ -177,27 +207,32 @@ function Main ([string] $ownerRepo,
     Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
 }
 
+#Generate the authorization header for the PowerShell call to the GitHub API
 function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
-    Write-Output "GetAuthHeader function is executing with $ghPatToken and $ghActionsToken"
+    #Clean the string
+    $ghPatToken = $ghPatToken.Trim()
 
-    $authHeader = $null
+    #warning: PowerShell has really wacky return semantics - all output is captured, and returned
+    #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
+    #Write-Output "GetAuthHeader function is executing with $ghPatToken and $ghActionsToken"
 
-    #Create encrpyted security token
-    if ([String]::IsNullOrEmpty($patToken) -eq $false)
+    if (![string]::IsNullOrEmpty($ghPatToken))
     {
-        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$authToken"))
-        @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-        Write-Output "Auth token: not null"
+        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$ghPatToken"))
+        $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
     }
     else
     {
         $base64AuthInfo = $null
-        Write-Output "Auth token: null"
+        $authHeader = $null
     }
 
     return $authHeader
 }
 
 cls
-main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays
+Write-Output "PAT: $ghPatToken"
+
+main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken
+GetAuthHeader($ghPatToken,$null)
 #main -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'CI' -branch 'Main' -numberOfDays 30

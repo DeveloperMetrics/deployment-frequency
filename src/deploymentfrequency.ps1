@@ -59,6 +59,10 @@ function Main ([string] $ownerRepo,
         {
             Write-Output "Authentication detected: PAT TOKEN"  
         }      
+        elseif (![string]::IsNullOrEmpty($ghActionsToken))
+        {
+            Write-Output "Authentication detected: GITHUB TOKEN: $authHeader["Authorization"]"  
+        }
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
@@ -211,6 +215,10 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
     {
         $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$ghPatToken"))
         $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+    }
+    elseif (![string]::IsNullOrEmpty($ghActionsToken))
+    {
+        $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
     }
     else
     {

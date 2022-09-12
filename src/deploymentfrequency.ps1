@@ -60,7 +60,6 @@ function Main ([string] $ownerRepo,
             Write-Output "Authentication detected: PAT TOKEN"  
         }      
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop 
-        #$workflowsResponse
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }

@@ -36,7 +36,7 @@ jobs:
         with:
           workflows: 'CI'
       - name: Test this repo with GitHub Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
         with:
           workflows: 'CI'
           ghActionsToken: "${{ secrets.GITHUB_TOKEN }}"
@@ -53,7 +53,7 @@ jobs:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
       - name: Test elite repo with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'

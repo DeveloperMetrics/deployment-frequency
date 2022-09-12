@@ -134,7 +134,6 @@ if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     $deploymentsPerDay = $dateList.Count / $numberOfDays
 }
 
-
 #==========================================
 #output result
 $dailyDeployment = 1
@@ -193,7 +192,14 @@ elseif ($deploymentsPerDay -le $yearlyDeployment)
     $displayUnit = "times per year"
 }
 
-Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+{
+    Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+}
+else
+{
+    Write-Output "Deployment frequency: no data to display for this workflow and time period"
+}
 }
 
 #Generate the authorization header for the PowerShell call to the GitHub API
@@ -221,5 +227,4 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
     return $authHeader
 }
 
-#cls
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken -ghActionsToken $ghActionsToken

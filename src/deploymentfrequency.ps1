@@ -202,13 +202,11 @@ function Main ([string] $ownerRepo,
 }
 
 #Generate the authorization header for the PowerShell call to the GitHub API
+#warning: PowerShell has really wacky return semantics - all output is captured, and returned
+#reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
 function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
-    #Clean the string
+    #Clean the string - without this the PAT TOKEN doesn't process
     $ghPatToken = $ghPatToken.Trim()
-
-    #warning: PowerShell has really wacky return semantics - all output is captured, and returned
-    #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-    #Write-Output "GetAuthHeader function is executing with $ghPatToken and $ghActionsToken"
 
     if (![string]::IsNullOrEmpty($ghPatToken))
     {
@@ -225,5 +223,4 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
 }
 
 cls
-
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken

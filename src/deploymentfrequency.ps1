@@ -59,7 +59,7 @@ function Main ([string] $ownerRepo,
         {
             Write-Output "Authentication detected: PAT TOKEN"  
         }      
-        $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)} -ErrorAction Stop 
+        $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop 
         #$workflowsResponse
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
@@ -94,20 +94,14 @@ function Main ([string] $ownerRepo,
     Foreach ($workflowId in $workflowIds){
         #Get workflow definitions from github
         $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100"
-        $uri3 = "https://api.github.com/rate_limit"
         if (!$authHeader)
         {
             $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -ErrorAction Stop
-            $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -ErrorAction Stop
         }
         else
         {
-            $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)} -ErrorAction Stop -Verbose          
-            $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)}  -ErrorAction Stop
+            $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop          
         }
-        
-        #echo $rateLimitResponse
-        Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
         $buildTotal = 0
         Foreach ($run in $workflowRunsResponse.workflow_runs){
@@ -131,7 +125,7 @@ function Main ([string] $ownerRepo,
     }
     else
     {
-        $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader.Value)}  -ErrorAction Stop
+        $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])}  -ErrorAction Stop
     }    
     Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
@@ -231,8 +225,8 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
 }
 
 cls
-Write-Output "PAT: $ghPatToken"
+#Write-Output "PAT: $ghPatToken"
 
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken
-GetAuthHeader($ghPatToken,$null)
+#GetAuthHeader($ghPatToken,$null)
 #main -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'CI' -branch 'Main' -numberOfDays 30

@@ -16,11 +16,11 @@ inputs:
     description: number of days to scan
     required: true
     default: 30
-  ghPATToken: # optional, defaults to null/$null
+  ghPATToken: # optional, defaults to an empty string ("")
     description: GitHub PAT Token
     required: true
     default: ""
-  ghActionsToken: # optional, defaults to null/$null
+  ghActionsToken: # optional, defaults to an empty string ("")
     description: GitHub Actions Token
     required: true
     default: ""

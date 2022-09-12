@@ -16,11 +16,19 @@ inputs:
     description: number of days to scan
     required: true
     default: 30
+  ghPATToken: # optional, defaults to null/$null
+    description: GitHub PAT Token
+    required: true
+    default: ""
+  ghActionsToken: # optional, defaults to null/$null
+    description: GitHub Actions Token
+    required: true
+    default: ""
 runs:
   using: "composite"
   steps:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} 
+         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -ghPATToken ${{ inputs.ghPATToken }} -ghActionsToken ${{ inputs.ghActionsToken }}
         

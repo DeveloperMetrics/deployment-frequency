@@ -5,7 +5,7 @@
 # - some rounding errors
 # - some questionable decisions made for the output. 
 
-#Parameters for this deploymentfrequency.ps1 PowerShell script
+#Parameters for the top level  deploymentfrequency.ps1 PowerShell script
 Param(
     [string] $ownerRepo,
     [string] $workflows,
@@ -225,8 +225,5 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
 }
 
 cls
-#Write-Output "PAT: $ghPatToken"
 
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken
-#GetAuthHeader($ghPatToken,$null)
-#main -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'CI' -branch 'Main' -numberOfDays 30

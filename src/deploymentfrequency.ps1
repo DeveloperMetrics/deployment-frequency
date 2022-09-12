@@ -4,8 +4,8 @@ Param(
     [string] $workflows,
     [string] $branch,
     [Int32] $numberOfDays,
-    [string] $ghPatToken = $null,
-    [string] $ghActionsToken = $null#,
+    [string] $ghPatToken = "",
+    [string] $ghActionsToken = ""#,
     #[string] $ghAppToken 
 )
 

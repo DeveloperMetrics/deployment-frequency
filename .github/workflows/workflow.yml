@@ -52,11 +52,12 @@ jobs:
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
-      - name: Test elite repo
+      - name: Test elite repo with PAT Token
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
+          ghPatToken: "${{ secrets.PATTOKEN }}"
           
   releaseAction:
     runs-on: ubuntu-latest

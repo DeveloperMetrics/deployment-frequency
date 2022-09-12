@@ -1,10 +1,3 @@
-# TODO 
-# - There are tons of bugs
-# - no versioning/tags/releases - (just use @main tag for now)
-# - minimal error handling
-# - some rounding errors
-# - some questionable decisions made for the output. 
-
 #Parameters for the top level  deploymentfrequency.ps1 PowerShell script
 Param(
     [string] $ownerRepo,
@@ -61,7 +54,7 @@ function Main ([string] $ownerRepo,
         }      
         elseif (![string]::IsNullOrEmpty($ghActionsToken))
         {
-            Write-Output "Authentication detected: GITHUB TOKEN: $authHeader["Authorization"]"  
+            Write-Output "Authentication detected: GITHUB TOKEN"  
         }
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop

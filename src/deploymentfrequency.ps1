@@ -223,3 +223,5 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
 
 cls
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken -ghActionsToken $ghActionsToken
+
+exit $LASTEXITCODE

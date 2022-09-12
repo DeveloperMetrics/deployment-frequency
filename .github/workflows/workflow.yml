@@ -35,6 +35,11 @@ jobs:
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI'
+      - name: Test this repo with GitHub Token
+        uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'CI'
+          ghActionsToken: "${{ secrets.GITHUB_TOKEN }}"
       - name: Test another repo with all arguments
         uses: samsmithnz/deployment-frequency@main
         with:

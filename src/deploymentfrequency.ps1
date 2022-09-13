@@ -6,7 +6,7 @@ Param(
     [Int32] $numberOfDays,
     [string] $patToken = "",
     [string] $actionsToken = ""#,
-    #[string] $ghAppToken 
+    #[string] $gitHubAppToken 
 )
 
 #The main function
@@ -16,7 +16,7 @@ function Main ([string] $ownerRepo,
     [Int32] $numberOfDays,
     [string] $patToken,
     [string] $actionsToken#,
-    #[string] $ghAppToken 
+    #[string] $gitHubAppToken 
     )
 {
 

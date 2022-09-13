@@ -11,7 +11,6 @@ Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-mea
 
 ## Open questions
 - what do to there are multiple workflows?
-- need to inject PAT tokens to call private repos 
 
 ## Inputs:
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)

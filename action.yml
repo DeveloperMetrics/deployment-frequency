@@ -21,7 +21,7 @@ inputs:
     required: true
     default: ""
   actionsToken: # optional, defaults to an empty string ("")
-    description: GitHub Actions Token, commonly passed in as ${{ secrets.GITHUB_TOKEN }}
+    description: GitHub Actions Token, commonly passed in as a variable (secrets.GITHUB_TOKEN)
     required: true
     default: ""
 runs:

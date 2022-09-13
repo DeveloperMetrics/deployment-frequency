@@ -47,11 +47,29 @@ jobs:
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
-      - name: Test elite repo
-        uses: samsmithnz/deployment-frequency@main
+          
+      - name: Test elite repo with PAT Token
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
+          patToken: "${{ secrets.PATTOKEN }}"
+      - name: Test elite repo with PAT Token with invalid TOKEN
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          patToken: "INVALIDPATTOKEN"
+      - name: Test unknown repo 
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
+        with:
+          workflows: 'CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags2'
+      - name: Test this repo with GitHub Token
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
+        with:
+          workflows: 'CI'
+          actionsToken: "${{ secrets.GITHUB_TOKEN }}"
           
   releaseAction:
     runs-on: ubuntu-latest

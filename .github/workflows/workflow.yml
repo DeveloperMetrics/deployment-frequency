@@ -54,6 +54,17 @@ jobs:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           ghPatToken: "${{ secrets.PATTOKEN }}"
+      - name: Test elite repo with PAT Token with invalid TOKEN
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          ghPatToken: "INVALIDPATTOKEN"
+      - name: Test unknown repo 
+        uses: samsmithnz/deployment-frequency@AuthenicationUpdate
+        with:
+          workflows: 'CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags2'
       - name: Test this repo with GitHub Token
         uses: samsmithnz/deployment-frequency@AuthenicationUpdate
         with:

@@ -4,8 +4,8 @@ Param(
     [string] $workflows,
     [string] $branch,
     [Int32] $numberOfDays,
-    [string] $ghPatToken = "",
-    [string] $ghActionsToken = ""#,
+    [string] $patToken = "",
+    [string] $actionsToken = ""#,
     #[string] $ghAppToken 
 )
 
@@ -14,8 +14,8 @@ function Main ([string] $ownerRepo,
     [string] $workflows,
     [string] $branch,
     [Int32] $numberOfDays,
-    [string] $ghPatToken,
-    [string] $ghActionsToken#,
+    [string] $patToken,
+    [string] $actionsToken#,
     #[string] $ghAppToken 
     ){
 
@@ -33,7 +33,7 @@ Write-Output "Number of days: $numberOfDays"
 
 #==========================================
 # Get authorization headers
-$authHeader = GetAuthHeader($ghPatToken, $ghActionsToken)
+$authHeader = GetAuthHeader($patToken, $actionsToken)
 
 #==========================================
 #Get workflow definitions from github
@@ -47,11 +47,11 @@ if (!$authHeader)
 else
 {
     #there is authentication
-    if (![string]::IsNullOrEmpty($ghPatToken))
+    if (![string]::IsNullOrEmpty($patToken))
     {
         Write-Output "Authentication detected: PAT TOKEN"  
     }      
-    elseif (![string]::IsNullOrEmpty($ghActionsToken))
+    elseif (![string]::IsNullOrEmpty($actionsToken))
     {
         Write-Output "Authentication detected: GITHUB TOKEN"  
     }
@@ -210,16 +210,16 @@ else
 #Generate the authorization header for the PowerShell call to the GitHub API
 #warning: PowerShell has really wacky return semantics - all output is captured, and returned
 #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
+function GetAuthHeader ([string] $patToken, [string] $actionsToken) {
     #Clean the string - without this the PAT TOKEN doesn't process
-    $ghPatToken = $ghPatToken.Trim()
+    $patToken = $patToken.Trim()
 
-    if (![string]::IsNullOrEmpty($ghPatToken))
+    if (![string]::IsNullOrEmpty($patToken))
     {
-        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$ghPatToken"))
+        $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$patToken"))
         $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
     }
-    elseif (![string]::IsNullOrEmpty($ghActionsToken))
+    elseif (![string]::IsNullOrEmpty($actionsToken))
     {
         $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
     }
@@ -232,4 +232,4 @@ function GetAuthHeader ([string] $ghPatToken, [string] $ghActionsToken) {
     return $authHeader
 }
 
-main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -ghPatToken $ghPatToken -ghActionsToken $ghActionsToken
+main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken

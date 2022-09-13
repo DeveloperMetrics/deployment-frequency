@@ -42,7 +42,7 @@ if (!$authHeader)
 {
     #No authentication
     Write-Output "No authentication"
-    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -ErrorAction Stop
+    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
 }
 else
 {
@@ -55,10 +55,15 @@ else
     {
         Write-Output "Authentication detected: GITHUB TOKEN"  
     }
-    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop 
+    $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
     #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
     #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
 }
+if ($HTTPStatus -eq "404")
+{
+    Write-Output "Repo is not found or you do not have access"
+    break
+}  
 
 #Extract workflow ids from the definitions, using the array of names. Number of Ids should == number of workflow names
 $workflowIds = [System.Collections.ArrayList]@()
@@ -84,18 +89,18 @@ Foreach ($workflow in $workflowsResponse.workflows){
 #==========================================
 #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
 $dateList = @()
-
+ 
 #For each workflow id, get the last 100 workflows from github
 Foreach ($workflowId in $workflowIds){
     #Get workflow definitions from github
     $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100"
     if (!$authHeader)
     {
-        $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -ErrorAction Stop
+        $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
     }
     else
     {
-        $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -ErrorAction Stop          
+        $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"      
     }
 
     $buildTotal = 0
@@ -116,11 +121,11 @@ Foreach ($workflowId in $workflowIds){
 $uri3 = "https://api.github.com/rate_limit"
 if (!$authHeader)
 {
-    $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -ErrorAction Stop
+    $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
 }
 else
 {
-    $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])}  -ErrorAction Stop
+    $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
 }    
 Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 

@@ -9,6 +9,10 @@ Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-mea
 - Then translate this result to friendly n days/weeks/months. 
 - As the cost is relatively low (1 Rest API call to GitHub), a result is typically returned in 5-10s.
 
+## Current Limitations
+- Only looks at the last 100 workflows. If deployments to the target branch is low, this will skew the result
+- The elite rating can be manipulated, as it looks for 30 deployments within a month to be hit. A true elite rating would be spread throughout the month.
+
 ## Open questions
 - what do to there are multiple workflows?
 

@@ -2,25 +2,33 @@ name: 'DORA deployment frequency'
 description: 'A GitHub Action to roughly calculate DORA deployment frequency'
 inputs:
   workflows: # required. string array of the name of the workflows to process
-    description: 'the workflow name that is being scanned. Separate multiple workflows with commas'
+    description: the workflow name that is being scanned. Separate multiple workflows with commas
     required: true
   owner-repo: # optional, defaults to current owner/repo
-    description: 'the target org/repo or owner/repo to run the calculation on'
+    description: target org/repo or owner/repo to run the calculation on
     required: true
     default: "${{ github.repository }}"
   default-branch:  # optional, defaults to main
-    description: 'branch that is deploying to production'
+    description: branch that is deploying to production
     required: true
     default: 'main'
   number-of-days: # optional, defaults to 30
     description: number of days to scan
     required: true
     default: 30
+  patToken: # optional, defaults to an empty string ("")
+    description: GitHub PAT Token
+    required: true
+    default: ""
+  actionsToken: # optional, defaults to an empty string ("")
+    description: GitHub Actions Token, commonly passed in as a variable (secrets.GITHUB_TOKEN)
+    required: true
+    default: ""
 runs:
   using: "composite"
   steps:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} 
+         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.patToken }}" -actionsToken "${{ inputs.actionsToken }}"
         

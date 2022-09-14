@@ -14,9 +14,11 @@ Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-mea
 
 ## Inputs:
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)
-- `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'samsmithnz/DevOpsMetrics'`
+- `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'samsmithnz/DevOpsMetrics'`, but will require authenication (see below)
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)
+- `patToken`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
+- `actionsToken`: optional, string, defaults to ''. CAn be set with `${{ secrets.GITHUB_TOKEN }}` in the action
 
 To test the current repo (same as where the action runs)
 ```
@@ -34,4 +36,22 @@ To test another repo, with all arguments
     owner-repo: 'samsmithnz/DevOpsMetrics'
     default-branch: 'main'
     number-of-days: 30
+```
+
+To use a PAT token to access another (potentially private) repo:
+```
+- name: Test elite repo with PAT Token
+  uses: samsmithnz/deployment-frequency@main
+  with:
+    workflows: 'CI/CD'
+    owner-repo: 'samsmithnz/SamsFeatureFlags'
+    patToken: "${{ secrets.PATTOKEN }}"
+```
+
+```
+- name: Test this repo with GitHub Token
+  uses: samsmithnz/deployment-frequency@main
+  with:
+    workflows: 'CI'
+    actionsToken: "${{ secrets.GITHUB_TOKEN }}"
 ```

@@ -5,8 +5,10 @@ Param(
     [string] $branch,
     [Int32] $numberOfDays,
     [string] $patToken = "",
-    [string] $actionsToken = ""#,
-    #[string] $gitHubAppToken 
+    [string] $actionsToken = "",
+    [string] $appId = "",
+    [string] $appInstallationId = "",
+    [string] $privateKey = ""
 )
 
 #The main function
@@ -211,7 +213,7 @@ function Main ([string] $ownerRepo,
 #Generate the authorization header for the PowerShell call to the GitHub API
 #warning: PowerShell has really wacky return semantics - all output is captured, and returned
 #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-function GetAuthHeader ([string] $patToken, [string] $actionsToken) 
+function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $privateKey) 
 {
     #Clean the string - without this the PAT TOKEN doesn't process
     $patToken = $patToken.Trim()
@@ -224,6 +226,12 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken)
     elseif (![string]::IsNullOrEmpty($actionsToken))
     {
         $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
+    }
+    # GitHup App auth
+    elseif (![string]::IsNullOrEmpty($appId))
+    {
+        $token = Get-JwtToken -appId $appId -appInstallationId $appInstallationId -privateKey $privateKey
+        $authHeader = @{Authorization=("token {0}" -f $token)}
     }
     else
     {

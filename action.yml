@@ -24,11 +24,20 @@ inputs:
     description: GitHub Actions Token, commonly passed in as a variable (secrets.GITHUB_TOKEN)
     required: true
     default: ""
+  app-id:
+    description: 'application id of the registered GitHub app'
+    default: ""
+  app-install-id:
+    description: 'id of the installed instance of the GitHub app'
+    default: ""
+  app-private-key:
+    description: 'private key which has been generated for the installed instance of the GitHub app'
+    default: ""
 runs:
   using: "composite"
   steps:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.patToken }}" -actionsToken "${{ inputs.actionsToken }}"
+         ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.patToken }}" -actionsToken "${{ inputs.actionsToken }}" -appId ${{ inputs.app-id }} -appInstallationId ${{ inputs.app-install-id }} -privateKey "${{ inputs.app-private-key }}"
         

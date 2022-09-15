@@ -15,7 +15,7 @@ inputs:
   number-of-days: # optional, defaults to 30
     description: number of days to scan
     required: true
-    default: 30
+    default: "30"
   patToken: # optional, defaults to an empty string ("")
     description: GitHub PAT Token
     required: true

@@ -1,6 +1,5 @@
 # Deployment Frequency
-What: A GitHub Action to roughly calculate DORA deployment frequency. This is not meant to be an exhaustive calculation, but we are able to fairly close for [insert analyzed percentage of scans]% of workflows.
-Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-measuring-dora-devops-metrics-and-how-you-can-learn-from-my-mistakes/) showed that most applications don't need exhaustive DORA analysis - a high level, order of magnitude result is accurate for most workloads. 
+A GitHub Action to roughly calculate DORA deployment frequency. This is not meant to be an exhaustive calculation, but we are able to approximate fairly close for most  of workflows. Why? Our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-measuring-dora-devops-metrics-and-how-you-can-learn-from-my-mistakes/) indicated that many applications don't need exhaustive DORA analysis - a high level, order of magnitude result is accurate for most workloads. 
 
 ## Current Calculation: 
 - Get the last 100 workflows

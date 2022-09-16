@@ -10,10 +10,9 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 
 ## Current Limitations
 - Only looks at the last 100 workflows. If deployments to the target branch is low, this will skew the result
-- The elite rating can be manipulated, as it looks for 30 deployments within a month to be hit. A true elite rating would be spread throughout the month.
 
 ## Open questions
-- what do to there are multiple workflows?
+- what do to when there are multiple workflows?
 
 ## Inputs:
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)

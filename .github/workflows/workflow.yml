@@ -70,6 +70,21 @@ jobs:
         with:
           workflows: 'CI'
           actions-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Test this repo with GitHub App Token
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
+        with:
+          workflows: 'CI'
+          app-id: "${{ secrets.APPID }}"
+          app-install-id: "${{ secrets.APPINSTALLID }}"
+          app-private-key: "${{ secrets.APPPRIVATEKEY }}"
+      - name: Test elite repo with GitHub App Token
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          app-id: "${{ secrets.APPID }}"
+          app-install-id: "${{ secrets.APPINSTALLID }}"
+          app-private-key: "${{ secrets.APPPRIVATEKEY }}"
           
   releaseAction:
     runs-on: ubuntu-latest

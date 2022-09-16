@@ -65,7 +65,7 @@ jobs:
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags2'
-      - name: Test this repo with GitHub Token
+      - name: Test this repo with GitHub Actions Token
         uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'CI'

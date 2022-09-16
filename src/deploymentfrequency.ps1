@@ -219,6 +219,7 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
         Write-Host "Authentication detected: GITHUB APP TOKEN"  
         $token = Get-JwtToken $appId $appInstallationId $appPrivateKey        
         $authHeader = @{Authorization=("token {0}" -f $token)}
+        Write-Host "$authHeader"
     }    
     elseif (![string]::IsNullOrEmpty($patToken))
     {
@@ -254,7 +255,7 @@ function ConvertTo-Base64UrlString([string] $in)
     }
 }
 
-function Get-JwtToken([string]$appId, [string] $appInstallationId, [string] $appPrivateKey)
+function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $appPrivateKey)
 {
     # Write-Host "appId: $appId"
     $now = (Get-Date).ToUniversalTime()

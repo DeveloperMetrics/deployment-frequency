@@ -16,12 +16,11 @@ function Main ([string] $ownerRepo,
     [string] $workflows,
     [string] $branch,
     [Int32] $numberOfDays,
-    [string] $patToken,
-    [string] $actionsToken,
+    [string] $patToken = "",
+    [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $appPrivateKey = ""
-    )
+    [string] $appPrivateKey = "")
 {
 
     #==========================================
@@ -37,8 +36,8 @@ function Main ([string] $ownerRepo,
     Write-Output "Number of days: $numberOfDays"
 
     #==========================================
-    # Get authorization headers
-    $authHeader = GetAuthHeader($patToken, $actionsToken, $appId, $appInstallationId, $appPrivateKey)
+    # Get authorization headers  
+    $authHeader = GetAuthHeader $patToken $actionsToken $appId $appInstallationId $appPrivateKey
 
     #==========================================
     #Get workflow definitions from github
@@ -46,24 +45,11 @@ function Main ([string] $ownerRepo,
     if (!$authHeader)
     {
         #No authentication
-        Write-Output "No authentication"
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
     }
     else
     {
         #there is authentication
-        if (![string]::IsNullOrEmpty($patToken))
-        {
-            Write-Output "Authentication detected: PAT TOKEN"  
-        }      
-        elseif (![string]::IsNullOrEmpty($actionsToken))
-        {
-            Write-Output "Authentication detected: GITHUB TOKEN"  
-        }     
-        elseif (![string]::IsNullOrEmpty($appId))
-        {
-            Write-Output "Authentication detected: GITHUB APP TOKEN"  
-        }
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
@@ -223,24 +209,31 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
 {
     #Clean the string - without this the PAT TOKEN doesn't process
     $patToken = $patToken.Trim()
-
-    if (![string]::IsNullOrEmpty($patToken))
+    #Write-Host  $appId
+    #Write-Host "pattoken: $patToken"
+    #Write-Host "app id is something: $(![string]::IsNullOrEmpty($appId))"
+    #Write-Host "patToken is something: $(![string]::IsNullOrEmpty($patToken))"
+    # GitHup App auth
+    if (![string]::IsNullOrEmpty($appId))
     {
+        Write-Host "Authentication detected: GITHUB APP TOKEN"  
+        $token = Get-JwtToken $appId $appInstallationId $appPrivateKey        
+        $authHeader = @{Authorization=("token {0}" -f $token)}
+    }    
+    elseif (![string]::IsNullOrEmpty($patToken))
+    {
+        Write-Host "Authentication detected: PAT TOKEN"
         $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$patToken"))
         $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
     }
     elseif (![string]::IsNullOrEmpty($actionsToken))
     {
+        Write-Host "Authentication detected: GITHUB TOKEN"  
         $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
-    }
-    # GitHup App auth
-    elseif (![string]::IsNullOrEmpty($appId))
-    {
-        $token = Get-JwtToken -appId $appId -appInstallationId $appInstallationId -privateKey $appPrivateKey
-        $authHeader = @{Authorization=("token {0}" -f $token)}
     }
     else
     {
+        Write-Host "No authentication detected" 
         $base64AuthInfo = $null
         $authHeader = $null
     }

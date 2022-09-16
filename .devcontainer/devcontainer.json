@@ -14,6 +14,31 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "src/deploymentfrequency.ps1 -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'Feature Flags CI/CD' -branch 'Main' -numberOfDays 30 -patToken $env:PATTOKEN",
+	// "postCreateCommand": "src/deploymentfrequency.ps1 -ownerRepo 'SamSmithnz/SamsFeatureFlags' -workflows 'Feature Flags CI/CD' -branch 'Main' -numberOfDays 30 -appId '238492' -appInstallationId '29266004' -appPrivateKey 'MIIEpAIBAAKCAQEA2eLqGEvZJsFALEgrT3/PObY9oDQLmFIhIPu1Z07HdyW2bqJv
+vQ3n1NUcml4lpBn7QQD+lBHZgsZU6MdDOqPRAJ4vvDhTRkAdeqFVPdm9wNM+bTKm
+0kagxNqf6oLi6L0xjwnUVkQdpBgECArFR841J9Zm/oqEbhSYlTSL0eDbX0+a1xiw
+Q8avFS2rsffp5CwAYLkAwNrpeh7ZvV/rgpiYZcK757Eml/eUSJhrtYmkNrKBMBkE
+5H39eQrwKPcTrz618wMvciqiDbATJB9Adg5KReSZCIm3BzUgjkbq6QZJ4Z/gap3Z
+OEeCsQ0mZaKDx2jVM2A/uKmFTPwTIf+S8F6PAwIDAQABAoIBAQDKtZ3tNMO2lpxJ
+lmsU72ev3ai/3yvabq57rTI8BsL0SpXLoDwsuz8wd4TA6U5DuhhThcVTpLekPzjH
+yHr3l2jfFkx65Dw1Y3kJmgdgH6+2MdImbbVedG8mNfAJkfPhbAMrfI2cJIsfG2jE
+wqCACYzSn1n6/ovujiLWzag3fucZZ5KFUrdbYAjVRMvZ+L6OEzNtiQlZLdHy3Yl8
+ujYrk0iBYIEPVz3ubJPj2Pch3Y+aV6jS5skubIsO+XBPV268qLNqpn1SYv2sGGQz
+iNZJlf5ecjZDDpsfuCFPMK6utoh/8FR7O4f3i7u4p4Ut4ha3QOkXmgtVSK+7L3uB
+68AXkkrBAoGBAPRWIB5SCNkcnKC3/1OO8HV+BXG9Zia7n/PSRGkM/Zr0NifRCySH
+mMtSStiHp20rXsHkiPb+LCyEW90NL3A25XO1KH6DvsfbVVnKCxexxwSibGZjdETx
+lbD6Xmo4WVQBstzdXO5YflfUs12GRr12evKJqbMuc+YoUS4a7mXmO/tpAoGBAORJ
+j3d3nSLIsfSgxb9vLEDNL4Hnh7m4+PFleWEUvrHqXX40rQom5eeTrnvoJktMht+d
+L6Lc1xeHWVdbxLDWleMNdgZC0BUMfZ84RFGIqArsPPGLLtAoc+IWDtY+jR8HI0I2
+2Gh3z83q9xeIULAOwpZlg4xbo1HWl8EZG4vqRAWLAoGBALGZ7My9SmsuLfdw5ynA
+i66LhL+RMTBUT0b2fv1xEOJSQw8cFyJdYcXgskDEEgH7dWwwhxIp3MgbCX8bN3E0
+pgI+GwojD0jMeDTE9N0rPwNyYKLoBbqbc/hpdLl27g9vEKkUSpmBP4zuMdZ4ZPEQ
+rvue7vgsethAVAnUT5dIDC+JAoGALTXQPtWmfgQHEi5g20e2GONJ3E0xGPvj+VKi
+VjKYjX2fpGXkOxV3BIS/0nQoWVM/hruHepaH1nYMoHthGbB1oLDCxfynXvPJUSYA
+ibEprngYnbF1xO2t/YFm0NE0e4ebWPqpow7PTbWR18w8RpG1wbk68yoWzxdTmH9T
+cEMl038CgYAFwYJb+Kd4MEhnliE5SSZxSvYcQPOA6iMhm9ASlgs3dUtMB+sl+VYW
+TQbvn/MD2N2e6Wmr7EdjA2wm5DL9u3wWRtzPSV9nxUSc/I7NUgDOyvNMMqCoNPdn
+Lh5zjzz1BlFGXqL/Jah+Ep+tOJkCeZC0C0DYBsgg/t//KXH9y7FQiQ=='",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",

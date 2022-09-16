@@ -18,11 +18,9 @@ inputs:
     default: "30"
   patToken: # optional, defaults to an empty string ("")
     description: GitHub PAT Token
-    required: true
     default: ""
   actionsToken: # optional, defaults to an empty string ("")
     description: GitHub Actions Token, commonly passed in as a variable (secrets.GITHUB_TOKEN)
-    required: true
     default: ""
   app-id:
     description: 'application id of the registered GitHub app'

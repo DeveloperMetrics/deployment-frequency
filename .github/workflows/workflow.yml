@@ -53,13 +53,13 @@ jobs:
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
-          patToken: "${{ secrets.PATTOKEN }}"
+          pat-token: "${{ secrets.PATTOKEN }}"
       - name: Test elite repo with PAT Token with invalid TOKEN
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
-          patToken: "INVALIDPATTOKEN"
+          pat-token: "INVALIDPATTOKEN"
       - name: Test unknown repo 
         uses: samsmithnz/deployment-frequency@main
         with:
@@ -69,7 +69,7 @@ jobs:
         uses: samsmithnz/deployment-frequency@main
         with:
           workflows: 'CI'
-          actionsToken: "${{ secrets.GITHUB_TOKEN }}"
+          actions-token: "${{ secrets.GITHUB_TOKEN }}"
           
   releaseAction:
     runs-on: ubuntu-latest

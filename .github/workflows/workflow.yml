@@ -32,41 +32,41 @@ jobs:
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
           
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
           
       - name: Test elite repo with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"
       - name: Test elite repo with PAT Token with invalid TOKEN
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "INVALIDPATTOKEN"
       - name: Test unknown repo 
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags2'
       - name: Test this repo with GitHub Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: samsmithnz/deployment-frequency@GitHubAppTests
         with:
           workflows: 'CI'
           actions-token: "${{ secrets.GITHUB_TOKEN }}"

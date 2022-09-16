@@ -242,7 +242,8 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
     return $authHeader
 }
 
-function ConvertTo-Base64UrlString([string] $in) 
+function ConvertTo-Base64UrlString(
+    [Parameter(Mandatory=$true,ValueFromPipeline=$true)]$in) 
 {
     if ($in -is [string]) {
         return [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($in)) -replace '\+','-' -replace '/','_' -replace '='

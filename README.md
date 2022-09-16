@@ -1,6 +1,8 @@
 # Deployment Frequency
-What: A GitHub Action to roughly calculate DORA deployment frequency. This is not meant to be an exhaustive calculation, but we are able to fairly close for [insert analyzed percentage of scans]% of workflows.
-Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-measuring-dora-devops-metrics-and-how-you-can-learn-from-my-mistakes/) showed that most applications don't need exhaustive DORA analysis - a high level, order of magnitude result is accurate for most workloads. 
+A GitHub Action to roughly calculate DORA deployment frequency. This is not meant to be an exhaustive calculation, but we are able to approximate fairly close for most  of workflows. Why? Our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-measuring-dora-devops-metrics-and-how-you-can-learn-from-my-mistakes/) indicated that many applications don't need exhaustive DORA analysis - a high level, order of magnitude result is accurate for most workloads. 
+
+[![CI](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml/badge.svg)](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml)
+![Current Release](https://img.shields.io/github/release/samsmithnz/deployment-frequency/all.svg)
 
 ## Current Calculation: 
 - Get the last 100 workflows
@@ -11,10 +13,9 @@ Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-mea
 
 ## Current Limitations
 - Only looks at the last 100 workflows. If deployments to the target branch is low, this will skew the result
-- The elite rating can be manipulated, as it looks for 30 deployments within a month to be hit. A true elite rating would be spread throughout the month.
 
 ## Open questions
-- what do to there are multiple workflows?
+- what do to when there are multiple workflows?
 
 ## Inputs:
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)
@@ -22,10 +23,10 @@ Why: our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-mea
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)
 - `patToken`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
-- `actionsToken`: optional, string, defaults to ''. CAn be set with `${{ secrets.GITHUB_TOKEN }}` in the action
-- `app-id`: required, application id of the registered GitHub app
-- `app-install-id`: required, id of the installed instance of the GitHub app
-- `app-private-key` required, private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
+- `actionsToken`: optional, string, defaults to ''. Can be set with `${{ secrets.GITHUB_TOKEN }}` in the action
+- `app-id`: optional, string, defaults to '', application id of the registered GitHub app
+- `app-install-id`: optional, string, defaults to '', id of the installed instance of the GitHub app
+- `app-private-key` optional, string, defaults to '', private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
 
 To test the current repo (same as where the action runs)
 ```
@@ -55,6 +56,7 @@ To use a PAT token to access another (potentially private) repo:
     patToken: "${{ secrets.PATTOKEN }}"
 ```
 
+Use the built in Actions GitHub Token to retrieve the metrix 
 ```
 - name: Test this repo with GitHub Token
   uses: samsmithnz/deployment-frequency@main
@@ -63,11 +65,14 @@ To use a PAT token to access another (potentially private) repo:
     actionsToken: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
-Gather metric from another repository using GitHub App authentication method:
+Gather the metric from another repository using GitHub App authentication method:
 ```
 - name: Test another repo with GitHub App
   uses: samsmithnz/deployment-frequency@main
   with:
     workflows: 'CI'
     owner-repo: 'samsmithnz/some-other-repo'
+    app-id: "${{ secrets.APPID }}"
+    app-install-id: "${{ secrets.APPINSTALLID }}"
+    app-private-key: "${{ secrets.APPPRIVATEKEY }}"
 ```

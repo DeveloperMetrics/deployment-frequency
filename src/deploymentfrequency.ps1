@@ -57,6 +57,10 @@ function Main ([string] $ownerRepo,
         elseif (![string]::IsNullOrEmpty($actionsToken))
         {
             Write-Output "Authentication detected: GITHUB TOKEN"  
+        }     
+        elseif (![string]::IsNullOrEmpty($appId))
+        {
+            Write-Output "Authentication detected: GITHUB APP TOKEN"  
         }
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop

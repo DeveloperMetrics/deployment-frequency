@@ -21,10 +21,10 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)
 - `patToken`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
-- `actionsToken`: optional, string, defaults to ''. CAn be set with `${{ secrets.GITHUB_TOKEN }}` in the action
-- `app-id`: required, application id of the registered GitHub app
-- `app-install-id`: required, id of the installed instance of the GitHub app
-- `app-private-key` required, private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
+- `actionsToken`: optional, string, defaults to ''. Can be set with `${{ secrets.GITHUB_TOKEN }}` in the action
+- `app-id`: optional, string, defaults to '', application id of the registered GitHub app
+- `app-install-id`: optional, string, defaults to '', id of the installed instance of the GitHub app
+- `app-private-key` optional, string, defaults to '', private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
 
 To test the current repo (same as where the action runs)
 ```
@@ -54,6 +54,7 @@ To use a PAT token to access another (potentially private) repo:
     patToken: "${{ secrets.PATTOKEN }}"
 ```
 
+Use the built in Actions GitHub Token to retrieve the metrix 
 ```
 - name: Test this repo with GitHub Token
   uses: samsmithnz/deployment-frequency@main
@@ -62,11 +63,14 @@ To use a PAT token to access another (potentially private) repo:
     actionsToken: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
-Gather metric from another repository using GitHub App authentication method:
+Gather the metric from another repository using GitHub App authentication method:
 ```
 - name: Test another repo with GitHub App
   uses: samsmithnz/deployment-frequency@main
   with:
     workflows: 'CI'
     owner-repo: 'samsmithnz/some-other-repo'
+    app-id: "${{ secrets.APPID }}"
+    app-install-id: "${{ secrets.APPINSTALLID }}"
+    app-private-key: "${{ secrets.APPPRIVATEKEY }}"
 ```

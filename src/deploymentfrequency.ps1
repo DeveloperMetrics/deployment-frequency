@@ -8,7 +8,7 @@ Param(
     [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $privateKey = ""
+    [string] $appPrivateKey = ""
 )
 
 #The main function
@@ -17,8 +17,10 @@ function Main ([string] $ownerRepo,
     [string] $branch,
     [Int32] $numberOfDays,
     [string] $patToken,
-    [string] $actionsToken#,
-    #[string] $gitHubAppToken 
+    [string] $actionsToken,
+    [string] $appId = "",
+    [string] $appInstallationId = "",
+    [string] $appPrivateKey = ""
     )
 {
 
@@ -36,7 +38,7 @@ function Main ([string] $ownerRepo,
 
     #==========================================
     # Get authorization headers
-    $authHeader = GetAuthHeader($patToken, $actionsToken)
+    $authHeader = GetAuthHeader($patToken, $actionsToken, $appId, $appInstallationId, $appPrivateKey)
 
     #==========================================
     #Get workflow definitions from github
@@ -217,7 +219,7 @@ function Main ([string] $ownerRepo,
 #Generate the authorization header for the PowerShell call to the GitHub API
 #warning: PowerShell has really wacky return semantics - all output is captured, and returned
 #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $privateKey) 
+function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $appPrivateKey) 
 {
     #Clean the string - without this the PAT TOKEN doesn't process
     $patToken = $patToken.Trim()
@@ -234,7 +236,7 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
     # GitHup App auth
     elseif (![string]::IsNullOrEmpty($appId))
     {
-        $token = Get-JwtToken -appId $appId -appInstallationId $appInstallationId -privateKey $privateKey
+        $token = Get-JwtToken -appId $appId -appInstallationId $appInstallationId -privateKey $appPrivateKey
         $authHeader = @{Authorization=("token {0}" -f $token)}
     }
     else
@@ -259,7 +261,7 @@ function ConvertTo-Base64UrlString([string] $in)
     }
 }
 
-function Get-JwtToken([string]$appId, [string] $appInstallationId, [string] $privateKey)
+function Get-JwtToken([string]$appId, [string] $appInstallationId, [string] $appPrivateKey)
 {
     # Write-Host "appId: $appId"
     $now = (Get-Date).ToUniversalTime()
@@ -288,7 +290,7 @@ function Get-JwtToken([string]$appId, [string] $appInstallationId, [string] $pri
 
     $rsa = [System.Security.Cryptography.RSA]::Create();    
     # https://stackoverflow.com/a/70132607 lead to the right import
-    $rsa.ImportRSAPrivateKey([System.Convert]::FromBase64String($privateKey), [ref] $null);
+    $rsa.ImportRSAPrivateKey([System.Convert]::FromBase64String($appPrivateKey), [ref] $null);
 
     try { $sig = ConvertTo-Base64UrlString $rsa.SignData($toSign,[Security.Cryptography.HashAlgorithmName]::SHA256,[Security.Cryptography.RSASignaturePadding]::Pkcs1) }
     catch { throw New-Object System.Exception -ArgumentList ("Signing with SHA256 and Pkcs1 padding failed using private key $($rsa): $_", $_.Exception) }
@@ -304,4 +306,4 @@ function Get-JwtToken([string]$appId, [string] $appInstallationId, [string] $pri
     return $tokenRespone.token
 }
 
-main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken
+main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey

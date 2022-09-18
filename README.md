@@ -4,7 +4,7 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 [![CI](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml/badge.svg)](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml)
 ![Current Release](https://img.shields.io/github/release/samsmithnz/deployment-frequency/all.svg)
 
-## Current Calculation: 
+## Current Calculation
 - Get the last 100 workflows
 - For each workflow, if it started in the last 30 days, and add it to a secondary filtered list - this is the number of deployments in the last 30 days
 - With this filtered list, divide the count by the 30 days for a number of deployments per day
@@ -17,13 +17,13 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 ## Open questions
 - what do to when there are multiple workflows?
 
-## Inputs:
+## Inputs
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)
 - `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'samsmithnz/DevOpsMetrics'`, but will require authenication (see below)
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)
-- `patToken`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
-- `actionsToken`: optional, string, defaults to ''. Can be set with `${{ secrets.GITHUB_TOKEN }}` in the action
+- `pat-token`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
+- `actions-token`: optional, string, defaults to ''. Can be set with `${{ secrets.GITHUB_TOKEN }}` in the action
 - `app-id`: optional, string, defaults to '', application id of the registered GitHub app
 - `app-install-id`: optional, string, defaults to '', id of the installed instance of the GitHub app
 - `app-private-key` optional, string, defaults to '', private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
@@ -53,7 +53,7 @@ To use a PAT token to access another (potentially private) repo:
   with:
     workflows: 'CI/CD'
     owner-repo: 'samsmithnz/SamsFeatureFlags'
-    patToken: "${{ secrets.PATTOKEN }}"
+    pat-token: "${{ secrets.PATTOKEN }}"
 ```
 
 Use the built in Actions GitHub Token to retrieve the metrix 
@@ -62,7 +62,7 @@ Use the built in Actions GitHub Token to retrieve the metrix
   uses: samsmithnz/deployment-frequency@main
   with:
     workflows: 'CI'
-    actionsToken: "${{ secrets.GITHUB_TOKEN }}"
+    actions-token: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
 Gather the metric from another repository using GitHub App authentication method:

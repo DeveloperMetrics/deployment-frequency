@@ -85,6 +85,16 @@ jobs:
           app-id: "${{ secrets.APPID }}"
           app-install-id: "${{ secrets.APPINSTALLID }}"
           app-private-key: "${{ secrets.APPPRIVATEKEY }}"
+ 
+  get-dora-single:
+        uses: ayodejiayodele/dora/.github/workflows/deployment-frequency.yml@main
+        with:
+          owner: "samsmithnz"
+          repo: "SamsFeatureFlags"
+          workflowName: "Feature Flags CI/CD"
+          numberOfDays: 30
+        secrets:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           
   releaseAction:
     runs-on: ubuntu-latest

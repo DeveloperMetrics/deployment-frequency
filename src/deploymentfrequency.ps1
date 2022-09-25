@@ -30,7 +30,7 @@ function Main ([string] $ownerRepo,
     $repo = $ownerRepoArray[1]
     Write-Output "Owner/Repo: $owner/$repo"
     $workflowsArray = $workflows -split ','
-    Write-Output "Workflows: $($workflowsArray[0])"
+    Write-Output "Workflows: $workflows"
     Write-Output "Branch: $branch"
     $numberOfDays = $numberOfDays        
     Write-Output "Number of days: $numberOfDays"
@@ -52,7 +52,6 @@ function Main ([string] $ownerRepo,
         #there is authentication
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
-        #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }
     if ($HTTPStatus -eq "404")
     {
@@ -139,7 +138,7 @@ function Main ([string] $ownerRepo,
     $dailyDeployment = 1
     $weeklyDeployment = 1 / 7
     $monthlyDeployment = 1 / 30
-    $everySixMonthsDeployment = 1 / (6 * 30) #//Every 6 months
+    $everySixMonthsDeployment = 1 / (6 * 30) #Every 6 months
     $yearlyDeployment = 1 / 365
 
     #Calculate rating 

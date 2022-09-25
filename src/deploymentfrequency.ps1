@@ -83,6 +83,7 @@ function Main ([string] $ownerRepo,
     #==========================================
     #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
     $dateList = @()
+    $deploymentsPerDayList = @()
     
     #For each workflow id, get the last 100 workflows from github
     Foreach ($workflowId in $workflowIds){
@@ -108,7 +109,29 @@ function Main ([string] $ownerRepo,
                 $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}     
             }
         }
+
+        if ($dateList.Length -gt 0)
+        {
+            #==========================================
+            #Calculate deployments per day
+            $deploymentsPerDay = 0
+
+            if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+            {
+                $deploymentsPerDay = $dateList.Count / $numberOfDays
+            }
+            $deploymentsPerDayList += $deploymentsPerDay
+            #Write-Output "Adding to list, workflow id $workflowId deployments per day of $deploymentsPerDay"
+        }
     }
+
+    #Write-Output "Total items in list is $($deploymentsPerDayList.Length)"
+    $totalDeployments = 0
+    Foreach ($deploymentItem in $deploymentsPerDayList){
+        $totalDeployments += $deploymentItem
+    }
+    $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
+    #Write-Output "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
 
     #==========================================
     #Show current rate limit
@@ -122,16 +145,6 @@ function Main ([string] $ownerRepo,
         $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
     }    
     Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
-
-
-    #==========================================
-    #Calculate deployments per day
-    $deploymentsPerDay = 0
-
-    if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
-    {
-        $deploymentsPerDay = $dateList.Count / $numberOfDays
-    }
 
     #==========================================
     #output result

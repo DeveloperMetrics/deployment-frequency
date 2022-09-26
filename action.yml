@@ -37,6 +37,6 @@ runs:
     - name: Run DORA deployment frequency 
       shell: pwsh
       run: |
-         result=$(${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.pat-token }}" -actionsToken "${{ inputs.actions-token }}" -appId "${{ inputs.app-id }}" -appInstallationId "${{ inputs.app-install-id }}" -appPrivateKey "${{ inputs.app-private-key }}")
+         result=$(ls ..)
          echo "$result" >> $GITHUB_STEP_SUMMARY
         

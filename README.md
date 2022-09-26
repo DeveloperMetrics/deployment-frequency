@@ -76,3 +76,16 @@ Gather the metric from another repository using GitHub App authentication method
     app-install-id: "${{ secrets.APPINSTALLID }}"
     app-private-key: "${{ secrets.APPPRIVATEKEY }}"
 ```
+
+# Output
+
+Current output shows the inputs, authenication method, rate limit consumption, and then the actual deployment frequency
+```
+Owner/Repo: samsmithnz/SamsFeatureFlags
+Workflows: Feature Flags CI/CD
+Branch: main
+Number of days: 30
+Authentication detected: GITHUB APP TOKEN
+Rate limit consumption: 10 / 5000
+Deployment frequency over last 30 days, is 1.2 per day, with a DORA rating of 'Elite'
+```

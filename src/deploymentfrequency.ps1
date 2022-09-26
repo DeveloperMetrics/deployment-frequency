@@ -30,7 +30,7 @@ function Main ([string] $ownerRepo,
     $repo = $ownerRepoArray[1]
     Write-Output "Owner/Repo: $owner/$repo"
     $workflowsArray = $workflows -split ','
-    Write-Output "Workflows: $($workflowsArray[0])"
+    Write-Output "Workflows: $workflows"
     Write-Output "Branch: $branch"
     $numberOfDays = $numberOfDays        
     Write-Output "Number of days: $numberOfDays"
@@ -52,7 +52,6 @@ function Main ([string] $ownerRepo,
         #there is authentication
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
-        #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }
     if ($HTTPStatus -eq "404")
     {
@@ -84,6 +83,7 @@ function Main ([string] $ownerRepo,
     #==========================================
     #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
     $dateList = @()
+    $deploymentsPerDayList = @()
     
     #For each workflow id, get the last 100 workflows from github
     Foreach ($workflowId in $workflowIds){
@@ -109,7 +109,29 @@ function Main ([string] $ownerRepo,
                 $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}     
             }
         }
+
+        if ($dateList.Length -gt 0)
+        {
+            #==========================================
+            #Calculate deployments per day
+            $deploymentsPerDay = 0
+
+            if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+            {
+                $deploymentsPerDay = $dateList.Count / $numberOfDays
+            }
+            $deploymentsPerDayList += $deploymentsPerDay
+            #Write-Output "Adding to list, workflow id $workflowId deployments per day of $deploymentsPerDay"
+        }
     }
+
+    #Write-Output "Total items in list is $($deploymentsPerDayList.Length)"
+    $totalDeployments = 0
+    Foreach ($deploymentItem in $deploymentsPerDayList){
+        $totalDeployments += $deploymentItem
+    }
+    $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
+    #Write-Output "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
 
     #==========================================
     #Show current rate limit
@@ -124,22 +146,12 @@ function Main ([string] $ownerRepo,
     }    
     Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
-
-    #==========================================
-    #Calculate deployments per day
-    $deploymentsPerDay = 0
-
-    if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
-    {
-        $deploymentsPerDay = $dateList.Count / $numberOfDays
-    }
-
     #==========================================
     #output result
     $dailyDeployment = 1
     $weeklyDeployment = 1 / 7
     $monthlyDeployment = 1 / 30
-    $everySixMonthsDeployment = 1 / (6 * 30) #//Every 6 months
+    $everySixMonthsDeployment = 1 / (6 * 30) #Every 6 months
     $yearlyDeployment = 1 / 365
 
     #Calculate rating 

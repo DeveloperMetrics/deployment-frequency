@@ -53,6 +53,12 @@ jobs:
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
+          pat-token: "${{ secrets.PATTOKEN }}"          
+      - name: Test elite repo, multiple workflows, with PAT Token
+        uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'Feature Flags CI/CD,CodeQL'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"
       - name: Test elite repo with PAT Token with invalid TOKEN
         uses: samsmithnz/deployment-frequency@main

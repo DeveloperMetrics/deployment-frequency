@@ -91,13 +91,6 @@ jobs:
           app-id: "${{ secrets.APPID }}"
           app-install-id: "${{ secrets.APPINSTALLID }}"
           app-private-key: "${{ secrets.APPPRIVATEKEY }}"
-            
-      - name: Test markdown summary on elite repo with PAT Token
-        uses: ayodejiayodele/deployment-frequency@feature/job-summary
-        with:
-          workflows: 'Feature Flags CI/CD'
-          owner-repo: 'samsmithnz/SamsFeatureFlags'
-          pat-token: "${{ secrets.MYPAT }}"
         
   releaseAction:
     runs-on: ubuntu-latest

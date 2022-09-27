@@ -13,7 +13,6 @@ jobs:
     outputs: # https://stackoverflow.com/questions/59175332/using-output-from-a-previous-job-in-a-new-one-in-a-github-action
       Version: ${{ steps.gitversion.outputs.SemVer }}
       CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}  
-
     steps:    
       - uses: actions/checkout@v3
         with:
@@ -30,9 +29,15 @@ jobs:
         run: |
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-          
+
+  test:
+    runs-on: ubuntu-latest
+    steps:    
+      - uses: actions/checkout@v3
+        with: 
+          ref: $GITHUB_REF_NAME
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
@@ -96,6 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
     - build
+    - test
     if: github.ref == 'refs/heads/main'      
     steps:
     - name: Display GitVersion outputs

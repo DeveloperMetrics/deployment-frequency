@@ -345,16 +345,16 @@ function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] 
     $workflowNames = $workflowIds -join ", "
     $encodedDeploymentFrequency = [System.Web.HttpUtility]::UrlEncode("$displayMetric $displayUnit")
 
-    $markdown = "## DORA Metric: Deployment Frequency\n\n" +
-    "This is how often you deploy **successfully** to production.\n\n" +
-    "### Results\n\n" +
-    "- Workflow(s): $workflowNames\n" +
-    "- Deployment Frequency: $displayMetric $displayUnit\n" +
-    # "You deployed to production **" + productionWorkflowRuns.length + " times** in the last " + numberOfDays + " days.\n" +
-    "In the last $numberOfDays days, you deployed to production on **$numberOfUniqueDates days** \n\n" + # excluding non-working days.\n\n" +
-    # "There are **" + numberOfWorkingDays + " working days** in the last " + numberOfDays + " days.\n" +
-    "This is **$rating** deployment frequency.\n\n" +
-    "## DORA Classification: $rating\n\n" +
+    $markdown = "## DORA Metric: Deployment Frequency`r`n" +
+    "This is how often you deploy **successfully** to production.`r`n" +
+    "### Results`r`n" +
+    "- Workflow(s): $workflowNames`n" +
+    "- Deployment Frequency: $displayMetric $displayUnit`n" +
+    # "You deployed to production **" + productionWorkflowRuns.length + " times** in the last " + numberOfDays + " days.`n" +
+    "In the last $numberOfDays days, you deployed to production on **$numberOfUniqueDates days** `r`n" + # excluding non-working days.`r`n" +
+    # "There are **" + numberOfWorkingDays + " working days** in the last " + numberOfDays + " days.`n" +
+    "This is **$rating** deployment frequency.`r`n" +
+    "## DORA Classification: $rating`r`n" +
     "![Deployment Frequency](https://badgen.net/badge/frequency/$encodedDeploymentFrequency/$color?icon=github&label=Deployment%20frequency)"
 
     return $markdown

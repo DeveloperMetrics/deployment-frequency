@@ -35,7 +35,7 @@ jobs:
     steps:    
       - uses: actions/checkout@v3
         with: 
-          ref: $GITHUB_REF_NAME
+          ref: ${{ github.ref }}
       - name: Test this repo
         uses: ./
         with:

@@ -30,10 +30,12 @@ jobs:
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
 
-  test:
+  # checkout the code from this branch, and then test the action from here
+  test: 
     runs-on: ubuntu-latest
     steps:    
-      - uses: actions/checkout@v3
+      - name: checkout the code from this branch
+        uses: actions/checkout@v3
         with: 
           ref: ${{ github.ref }}
       - name: Test this repo

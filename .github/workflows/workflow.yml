@@ -7,9 +7,6 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-env:
-  branch-name: multiple-workflows-patch
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,10 +30,9 @@ jobs:
         run: |
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-          echo "branch $GITHUB_REF_NAME"
           
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@${{ env.branch-name }}
+        uses: samsmithnz/deployment-frequency@multiple-workflows-patch
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments

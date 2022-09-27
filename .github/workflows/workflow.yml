@@ -37,36 +37,36 @@ jobs:
         with: 
           ref: ${{ github.ref }}
       - name: Test this repo
-        uses: ./
+        uses: ./ # the ./ runs the action.yml in this repo 
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
           
       - name: Test elite repo with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"          
       - name: Test elite repo, multiple workflows, with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD,CodeQL'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"
       - name: Test elite repo with PAT Token with invalid TOKEN
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
@@ -77,19 +77,19 @@ jobs:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags2'
       - name: Test this repo with GitHub Actions Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI'
           actions-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Test this repo with GitHub App Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI'
           app-id: "${{ secrets.APPID }}"
           app-install-id: "${{ secrets.APPINSTALLID }}"
           app-private-key: "${{ secrets.APPPRIVATEKEY }}"
       - name: Test elite repo with GitHub App Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'

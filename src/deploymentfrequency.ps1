@@ -83,6 +83,7 @@ function Main ([string] $ownerRepo,
     #==========================================
     #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
     $dateList = @()
+    $uniqueDates = @()
     $deploymentsPerDayList = @()
     
     #For each workflow id, get the last 100 workflows from github
@@ -106,7 +107,8 @@ function Main ([string] $ownerRepo,
                 #Write-Output "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
                 $buildTotal++       
                 #get the workflow start and end time            
-                $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}     
+                $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}
+                $uniqueDates += $run.created_at.Date.ToString("yyyy-MM-dd")     
             }
         }
 
@@ -149,6 +151,18 @@ function Main ([string] $ownerRepo,
     }    
     Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
 
+
+    #==========================================
+    #Calculate deployments per day
+    $deploymentsPerDay = 0
+
+    if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+    {
+        $deploymentsPerDay = $dateList.Count / $numberOfDays
+        # get unique values in $uniqueDates
+        $uniqueDates = $uniqueDates | Sort-Object | Get-Unique
+    }
+
     #==========================================
     #output result
     $dailyDeployment = 1
@@ -159,25 +173,32 @@ function Main ([string] $ownerRepo,
 
     #Calculate rating 
     $rating = ""
+    $color = ""
+
     if ($deploymentsPerDay -le 0)
     {
         $rating = "None"
+        $color = "grey"
     }
     elseif ($deploymentsPerDay -ge $dailyDeployment)
     {
         $rating = "Elite"
+        $color = "green"
     }
     elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
     {
         $rating = "High"
+        $color = "green"
     }
     elseif (deploymentsPerDay -le $monthlyDeployment -and $deploymentsPerDay -ge $everySixMonthsDeployment)
     {
         $rating = "Medium"
+        $color = "yellow"
     }
     elseif ($deploymentsPerDay -le $everySixMonthsDeployment)
     {
         $rating = "Low"
+        $color = "red"
     }
 
     #Calculate metric and unit
@@ -210,10 +231,14 @@ function Main ([string] $ownerRepo,
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
         Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+        return Format-OutputMarkdown -workflowIds $workflowIds -displayMetric $displayMetric -displayUnit $displayUnit -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
+
     }
     else
     {
-        Write-Output "Deployment frequency: no data to display for this workflow and time period"
+        $output = "Deployment frequency: no data to display for this workflow and time period"
+        Write-Output $output
+        return $output
     }
 }
 
@@ -312,6 +337,27 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
     $tokenResponse = Invoke-RestMethod -Uri $uri -Headers $jwtHeader -Method Post -ErrorAction Stop
     # Write-Host $tokenResponse.token
     return $tokenResponse.token
+}
+
+# Format output for deployment frequency in markdown
+function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
+{
+    $workflowNames = $workflowIds -join ", "
+    $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
+
+    $markdown = "## DORA Metric: Deployment Frequency`r`n" +
+    "This is how often you deploy **successfully** to production.`r`n" +
+    "### Results`r`n" +
+    "- Workflow(s): $workflowNames`n" +
+    "- Deployment Frequency: $displayMetric $displayUnit`n" +
+    # "You deployed to production **" + productionWorkflowRuns.length + " times** in the last " + numberOfDays + " days.`n" +
+    "In the last $numberOfDays days, you deployed to production on **$numberOfUniqueDates days** `r`n" + # excluding non-working days.`r`n" +
+    # "There are **" + numberOfWorkingDays + " working days** in the last " + numberOfDays + " days.`n" +
+    "This is **$rating** deployment frequency.`r`n" +
+    "## DORA Classification: $rating`r`n" +
+    "![Deployment Frequency](https://badgen.net/badge/frequency/" + $encodedDeploymentFrequency + "/" + $color + "?icon=github&label=Deployment%20frequency)"
+
+    return $markdown
 }
 
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey

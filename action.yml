@@ -39,7 +39,6 @@ runs:
       run: |
          $result = ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.pat-token }}" -actionsToken "${{ inputs.actions-token }}" -appId "${{ inputs.app-id }}" -appInstallationId "${{ inputs.app-install-id }}" -appPrivateKey "${{ inputs.app-private-key }}"
          Write-Host "::set-output name=result::$result"
-         Write-Output $result
          Write-Output $result >> $env:GITHUB_STEP_SUMMARY
          
         

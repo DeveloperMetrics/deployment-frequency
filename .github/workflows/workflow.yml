@@ -30,6 +30,7 @@ jobs:
         run: |
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
+          echo "branch $GITHUB_REF_NAME"
           
       - name: Test this repo
         uses: samsmithnz/deployment-frequency@$GITHUB_REF_NAME

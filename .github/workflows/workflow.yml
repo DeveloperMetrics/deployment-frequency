@@ -7,6 +7,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+env:
+  branch-name: samsmithnz/deployment-frequency@multiple-workflows-patch
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,7 +36,7 @@ jobs:
           echo "branch $GITHUB_REF_NAME"
           
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@multiple-workflows-patch
+        uses: ${{ env.branch-name }}
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments

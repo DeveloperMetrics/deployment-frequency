@@ -130,7 +130,10 @@ function Main ([string] $ownerRepo,
     Foreach ($deploymentItem in $deploymentsPerDayList){
         $totalDeployments += $deploymentItem
     }
-    $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
+    if ($deploymentsPerDayList.Length -gt 0)
+    {
+        $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
+    }
     #Write-Output "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
 
     #==========================================

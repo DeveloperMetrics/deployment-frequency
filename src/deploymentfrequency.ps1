@@ -343,7 +343,7 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
     $workflowNames = $workflowIds -join ", "
-    $encodedDeploymentFrequency = [System.Web.HttpUtility]::UrlEncode("$displayMetric $displayUnit")
+    $encodedDeploymentFrequency = [System.Web.HttpUtility]::UrlEncode($displayMetric + " " + $displayUnit)
 
     $markdown = "## DORA Metric: Deployment Frequency`r`n" +
     "This is how often you deploy **successfully** to production.`r`n" +

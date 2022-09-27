@@ -30,7 +30,7 @@ function Main ([string] $ownerRepo,
     $repo = $ownerRepoArray[1]
     Write-Output "Owner/Repo: $owner/$repo"
     $workflowsArray = $workflows -split ','
-    Write-Output "Workflows: $($workflowsArray[0])"
+    Write-Output "Workflows: $workflows"
     Write-Output "Branch: $branch"
     $numberOfDays = $numberOfDays        
     Write-Output "Number of days: $numberOfDays"
@@ -52,7 +52,6 @@ function Main ([string] $ownerRepo,
         #there is authentication
         $workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus" 
         #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -ErrorAction Stop
-        #$workflowsResponse = Invoke-RestMethod -Uri $uri -ContentType application/json -Method Get -Headers @{Authorization=("Bearer {0}" -f $base64AuthInfo)} -ErrorAction Stop
     }
     if ($HTTPStatus -eq "404")
     {
@@ -85,11 +84,12 @@ function Main ([string] $ownerRepo,
     #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
     $dateList = @()
     $uniqueDates = @()
+    $deploymentsPerDayList = @()
     
     #For each workflow id, get the last 100 workflows from github
     Foreach ($workflowId in $workflowIds){
         #Get workflow definitions from github
-        $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100"
+        $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100&status=completed"
         if (!$authHeader)
         {
             $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
@@ -102,7 +102,7 @@ function Main ([string] $ownerRepo,
         $buildTotal = 0
         Foreach ($run in $workflowRunsResponse.workflow_runs){
             #Count workflows that are completed, on the target branch, and were created within the day range we are looking at
-            if ($run.status -eq "completed" -and $run.head_branch -eq $branch -and $run.created_at -gt (Get-Date).AddDays(-$numberOfDays))
+            if ($run.head_branch -eq $branch -and $run.created_at -gt (Get-Date).AddDays(-$numberOfDays))
             {
                 #Write-Output "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
                 $buildTotal++       
@@ -111,7 +111,32 @@ function Main ([string] $ownerRepo,
                 $uniqueDates += $run.created_at.Date.ToString("yyyy-MM-dd")     
             }
         }
+
+        if ($dateList.Length -gt 0)
+        {
+            #==========================================
+            #Calculate deployments per day
+            $deploymentsPerDay = 0
+
+            if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
+            {
+                $deploymentsPerDay = $dateList.Count / $numberOfDays
+            }
+            $deploymentsPerDayList += $deploymentsPerDay
+            #Write-Output "Adding to list, workflow id $workflowId deployments per day of $deploymentsPerDay"
+        }
     }
+
+    #Write-Output "Total items in list is $($deploymentsPerDayList.Length)"
+    $totalDeployments = 0
+    Foreach ($deploymentItem in $deploymentsPerDayList){
+        $totalDeployments += $deploymentItem
+    }
+    if ($deploymentsPerDayList.Length -gt 0)
+    {
+        $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
+    }
+    #Write-Output "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
 
     #==========================================
     #Show current rate limit
@@ -143,7 +168,7 @@ function Main ([string] $ownerRepo,
     $dailyDeployment = 1
     $weeklyDeployment = 1 / 7
     $monthlyDeployment = 1 / 30
-    $everySixMonthsDeployment = 1 / (6 * 30) #//Every 6 months
+    $everySixMonthsDeployment = 1 / (6 * 30) #Every 6 months
     $yearlyDeployment = 1 / 365
 
     #Calculate rating 

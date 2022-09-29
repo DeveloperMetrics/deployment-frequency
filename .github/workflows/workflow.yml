@@ -13,7 +13,6 @@ jobs:
     outputs: # https://stackoverflow.com/questions/59175332/using-output-from-a-previous-job-in-a-new-one-in-a-github-action
       Version: ${{ steps.gitversion.outputs.SemVer }}
       CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}  
-
     steps:    
       - uses: actions/checkout@v3
         with:
@@ -30,38 +29,46 @@ jobs:
         run: |
           echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-          
+
+  # checkout the code from this branch, and then test the action from here
+  test: 
+    runs-on: ubuntu-latest
+    steps:    
+      - name: checkout the code from this branch
+        uses: actions/checkout@v3
+        with: 
+          ref: ${{ github.ref }}
       - name: Test this repo
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./ # the ./ runs the action.yml in this repo 
         with:
           workflows: 'CI'
       - name: Test another repo with all arguments
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
           
       - name: Test elite repo with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"          
       - name: Test elite repo, multiple workflows, with PAT Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD,CodeQL'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"
       - name: Test elite repo with PAT Token with invalid TOKEN
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
@@ -72,19 +79,19 @@ jobs:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags2'
       - name: Test this repo with GitHub Actions Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI'
           actions-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Test this repo with GitHub App Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'CI'
           app-id: "${{ secrets.APPID }}"
           app-install-id: "${{ secrets.APPINSTALLID }}"
           app-private-key: "${{ secrets.APPPRIVATEKEY }}"
       - name: Test elite repo with GitHub App Token
-        uses: samsmithnz/deployment-frequency@main
+        uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
@@ -96,6 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
     - build
+    - test
     if: github.ref == 'refs/heads/main'      
     steps:
     - name: Display GitVersion outputs

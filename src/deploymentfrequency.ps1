@@ -183,7 +183,7 @@ function Main ([string] $ownerRepo,
     elseif ($deploymentsPerDay -ge $dailyDeployment)
     {
         $rating = "Elite"
-        $color = "green"
+        $color = "brightgreen"
     }
     elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
     {

@@ -355,7 +355,7 @@ function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] 
     # "There are **" + numberOfWorkingDays + " working days** in the last " + numberOfDays + " days.`n" +
     "This is **$rating** deployment frequency.`r`n" +
     "## DORA Classification: $rating`r`n" +
-    "![Deployment Frequency](https://badgen.net/badge/frequency/" + $encodedDeploymentFrequency + "/" + $color + "?icon=github&label=Deployment%20frequency)"
+    "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)"
 
     return $markdown
 }

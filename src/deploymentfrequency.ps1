@@ -346,16 +346,11 @@ function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] 
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
     $markdown = "## DORA Metric: Deployment Frequency`r`n" +
-    "This is how often you deploy **successfully** to production.`r`n" +
-    "### Results`r`n" +
-    "- Workflow(s): $workflowNames`n" +
-    "- Deployment Frequency: $displayMetric $displayUnit`n" +
-    # "You deployed to production **" + productionWorkflowRuns.length + " times** in the last " + numberOfDays + " days.`n" +
-    "In the last $numberOfDays days, you deployed to production on **$numberOfUniqueDates days** `r`n" + # excluding non-working days.`r`n" +
-    # "There are **" + numberOfWorkingDays + " working days** in the last " + numberOfDays + " days.`n" +
-    "This is **$rating** deployment frequency.`r`n" +
-    "## DORA Classification: $rating`r`n" +
-    "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)"
+    "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
+    "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
+    "**Results:** Deployment frequency over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a DORA rating of **$rating**.`n" +
+    "- Workflow(s) used: $workflowNames`n" +
+    "- Active days of deployment: $numberOfUniqueDates days`n"
 
     return $markdown
 }

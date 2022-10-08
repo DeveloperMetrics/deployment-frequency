@@ -242,13 +242,15 @@ function Main ([string] $ownerRepo,
 
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
-        Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+        }
         return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }
     else
     {
-        $output = "Deployment frequency: no data to display for this workflow and time period"
-        Write-Output $output
+        Write-Output "Deployment frequency: no data to display for this workflow and time period"
         return "`n---`n" # return nothing - so that we don't duplicate the write-output message
     }
 }

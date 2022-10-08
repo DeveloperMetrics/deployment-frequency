@@ -250,10 +250,7 @@ function Main ([string] $ownerRepo,
     }
     else
     {
-        $output = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-gray?logo=github&label=Deployment%20frequency)`r`n" +
-            "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days`n" + 
-            "---"
-        return $output
+        return Format-NoOutputMarkdown -workflows $workflows -numberOfDays $numberOfDays
     }
 }
 
@@ -373,7 +370,6 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 
     $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
     "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
-    #"**Results:** Deployment frequency for **$repo** repo, **$branch** branch, over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a rating of **$rating**.`n" +
     "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
     "**Details**:`n" + 
     "- Repository: $repo using $branch branch`n" + 
@@ -382,6 +378,14 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
     "---"
 
     return $markdown
+}
+
+function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
+{
+    $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n" +
+        "no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days`n" + 
+        "---"
+    return markdown
 }
 
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey -showVerboseLogging $showVerboseLogging

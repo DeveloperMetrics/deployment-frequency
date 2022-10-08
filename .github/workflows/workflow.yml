@@ -40,10 +40,10 @@ jobs:
           ref: ${{ github.ref }}
 
       #basic tests
-      # - name: Test this repo
-      #   uses: ./ # the ./ runs the action.yml in this repo 
-      #   with:
-      #     workflows: 'CI'
+      - name: Test this repo
+        uses: ./ # the ./ runs the action.yml in this repo 
+        with:
+          workflows: 'CI'
       - name: Test another repo with all arguments
         uses: ./
         with:
@@ -67,43 +67,43 @@ jobs:
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "${{ secrets.PATTOKEN }}"    
           show-verbose-logging: 0      
-      # - name: Test elite repo, multiple workflows, with PAT Token
-      #   uses: ./
-      #   with:
-      #     workflows: 'Feature Flags CI/CD,CodeQL'
-      #     owner-repo: 'samsmithnz/SamsFeatureFlags'
-      #     pat-token: "${{ secrets.PATTOKEN }}"
-      # - name: Test elite repo with PAT Token with invalid TOKEN
-      #   uses: ./
-      #   with:
-      #     workflows: 'Feature Flags CI/CD'
-      #     owner-repo: 'samsmithnz/SamsFeatureFlags'
-      #     pat-token: "INVALIDPATTOKEN"
-      # - name: Test unknown repo 
-      #   uses: samsmithnz/deployment-frequency@main
-      #   with:
-      #     workflows: 'CI/CD'
-      #     owner-repo: 'samsmithnz/SamsFeatureFlags2'
-      # - name: Test this repo with GitHub Actions Token
-      #   uses: ./
-      #   with:
-      #     workflows: 'CI'
-      #     actions-token: "${{ secrets.GITHUB_TOKEN }}"
-      # - name: Test this repo with GitHub App Token
-      #   uses: ./
-      #   with:
-      #     workflows: 'CI'
-      #     app-id: "${{ secrets.APPID }}"
-      #     app-install-id: "${{ secrets.APPINSTALLID }}"
-      #     app-private-key: "${{ secrets.APPPRIVATEKEY }}"
-      # - name: Test elite repo with GitHub App Token
-      #   uses: ./
-      #   with:
-      #     workflows: 'Feature Flags CI/CD'
-      #     owner-repo: 'samsmithnz/SamsFeatureFlags'
-      #     app-id: "${{ secrets.APPID }}"
-      #     app-install-id: "${{ secrets.APPINSTALLID }}"
-      #     app-private-key: "${{ secrets.APPPRIVATEKEY }}"
+      - name: Test elite repo, multiple workflows, with PAT Token
+        uses: ./
+        with:
+          workflows: 'Feature Flags CI/CD,CodeQL'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          pat-token: "${{ secrets.PATTOKEN }}"
+      - name: Test elite repo with PAT Token with invalid TOKEN
+        uses: ./
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          pat-token: "INVALIDPATTOKEN"
+      - name: Test unknown repo 
+        uses: samsmithnz/deployment-frequency@main
+        with:
+          workflows: 'CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags2'
+      - name: Test this repo with GitHub Actions Token
+        uses: ./
+        with:
+          workflows: 'CI'
+          actions-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Test this repo with GitHub App Token
+        uses: ./
+        with:
+          workflows: 'CI'
+          app-id: "${{ secrets.APPID }}"
+          app-install-id: "${{ secrets.APPINSTALLID }}"
+          app-private-key: "${{ secrets.APPPRIVATEKEY }}"
+      - name: Test elite repo with GitHub App Token
+        uses: ./
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          app-id: "${{ secrets.APPID }}"
+          app-install-id: "${{ secrets.APPINSTALLID }}"
+          app-private-key: "${{ secrets.APPPRIVATEKEY }}"
         
   releaseAction:
     runs-on: ubuntu-latest

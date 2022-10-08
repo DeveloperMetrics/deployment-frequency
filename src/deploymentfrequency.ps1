@@ -67,13 +67,21 @@ function Main ([string] $ownerRepo,
 
     #Extract workflow ids from the definitions, using the array of names. Number of Ids should == number of workflow names
     $workflowIds = [System.Collections.ArrayList]@()
+    $workflowNames = [System.Collections.ArrayList]@()
     Foreach ($workflow in $workflowsResponse.workflows){
 
         Foreach ($arrayItem in $workflowsArray){
             if ($workflow.name -eq $arrayItem)
             {
-                #This looks odd: but assigning to a (throwaway) variable stops the index of the array being output to the console
-                $result = $workflowIds.Add($workflow.id)
+                #This looks odd: but assigning to a (throwaway) variable stops the index of the arraylist being output to the console. Using an arraylist over an array has advantages making this worth it for here
+                if (!$workflowIds.Contains($workflow.id))
+                {
+                    $result = $workflowIds.Add($workflow.id)
+                }
+                if (!$workflowNames.Contains($workflow.name))
+                {
+                    $result = $workflowNames.Add($workflow.name)
+                }
             }
             # else 
             # {
@@ -235,7 +243,7 @@ function Main ([string] $ownerRepo,
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
         Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
-        return Format-OutputMarkdown -workflowIds $workflowIds -displayMetric $displayMetric -displayUnit $displayUnit -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
+        return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }
     else
     {
@@ -355,16 +363,15 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 }
 
 # Format output for deployment frequency in markdown
-function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
+function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
-    $workflowNames = $workflowIds -join ", "
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
     $markdown = "## DORA Metric: Deployment Frequency`r`n" +
     "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
     "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
     "**Results:** Deployment frequency for **repo** repo, **$branch** branch, over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a rating of **$rating**.`n" +
-    "- Workflow(s) used: $workflowNames`n" +
+    "- Workflow(s) used: $($workflowNames -join ", ")`n" +
     "- Active days of deployment: $numberOfUniqueDates days`n" + 
     "---"
 

@@ -51,6 +51,7 @@ jobs:
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
+          show-verbose-logging: 1
       - name: Test no workflow
         uses: ./
         with:
@@ -64,7 +65,8 @@ jobs:
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
-          pat-token: "${{ secrets.PATTOKEN }}"          
+          pat-token: "${{ secrets.PATTOKEN }}"    
+          show-verbose-logging: 1      
       # - name: Test elite repo, multiple workflows, with PAT Token
       #   uses: ./
       #   with:

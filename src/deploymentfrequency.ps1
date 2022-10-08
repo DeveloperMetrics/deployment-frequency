@@ -382,7 +382,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
 {
     $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n" +
-        "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n" + 
+        "**Results:** No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n" + 
         "---"
     return $markdown
 }

@@ -250,8 +250,10 @@ function Main ([string] $ownerRepo,
     }
     else
     {
-        Write-Output "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days"
-        return "`n---`n" # return nothing - so that we don't duplicate the write-output message
+        $output = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-gray?logo=github&label=Deployment%20frequency)`r`n" +
+            "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days"`n" + 
+            "---"
+        return $output
     }
 }
 

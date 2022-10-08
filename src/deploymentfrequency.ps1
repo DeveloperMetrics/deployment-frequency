@@ -250,7 +250,7 @@ function Main ([string] $ownerRepo,
     }
     else
     {
-        Write-Output "Deployment frequency: no data to display for this workflow and time period"
+        Write-Output "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days"
         return "`n---`n" # return nothing - so that we don't duplicate the write-output message
     }
 }

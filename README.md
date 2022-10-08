@@ -88,4 +88,14 @@ Deployment frequency over last 30 days, is 1.2 per day, with a DORA rating of 'E
 ```
 
 In the job summary, we show a badge with details:
-![image](https://user-images.githubusercontent.com/8389039/194720101-8fe50812-a721-46e7-b4ab-69f391aa496c.png)
+> ![Deployment Frequency](https://img.shields.io/badge/frequency-4.67%20times%20per%20week-green?logo=github&label=Deployment%20frequency)
+> 
+> **Definition:** For the primary application or service, how often is it successfully deployed to production.
+> 
+> **Results:** Deployment frequency is **4.67 times per week** with a **High** rating, over the last **30 days**.
+> 
+> **Details**:
+> - Repository: samsmithnz/deployment-frequency using main branch
+> - Workflow(s) used: CI
+> - Active days of deployment: 13 days
+> ---

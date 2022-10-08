@@ -32,7 +32,7 @@ function Main ([string] $ownerRepo,
     $repo = $ownerRepoArray[1]
     $workflowsArray = $workflows -split ','
     $numberOfDays = $numberOfDays    
-    Write-Output "showVerboseLogging: $showVerboseLogging"    
+    #Write-Output "showVerboseLogging: $showVerboseLogging"    
     if ($showVerboseLogging -eq $true)
     {
         Write-Output "Owner/Repo: $owner/$repo"
@@ -72,12 +72,8 @@ function Main ([string] $ownerRepo,
         Foreach ($arrayItem in $workflowsArray){
             if ($workflow.name -eq $arrayItem)
             {
-                #Write-Output "'$($workflow.name)' matched with $arrayItem"
+                #This looks odd: but assigning to a (throwaway) variable stops the index of the array being output to the console
                 $result = $workflowIds.Add($workflow.id)
-                if ($result -lt 0)
-                {
-                    Write-Output "unexpected result"
-                }
             }
             else 
             {

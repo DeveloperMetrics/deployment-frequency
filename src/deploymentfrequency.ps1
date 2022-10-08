@@ -350,7 +350,8 @@ function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] 
     "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
     "**Results:** Deployment frequency for **$branch** branch, over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a rating of **$rating**.`n" +
     "- Workflow(s) used: $workflowNames`n" +
-    "- Active days of deployment: $numberOfUniqueDates days`n"
+    "- Active days of deployment: $numberOfUniqueDates days`n" + 
+    "---"
 
     return $markdown
 }

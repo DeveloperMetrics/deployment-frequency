@@ -5,7 +5,7 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 [![Current Release](https://img.shields.io/github/release/samsmithnz/deployment-frequency/all.svg)](https://github.com/samsmithnz/deployment-frequency/releases)
 
 ## Current Calculation
-- Get the last 100 workflows
+- Get the last 100 completed workflows
 - For each workflow, if it started in the last 30 days, and add it to a secondary filtered list - this is the number of deployments in the last 30 days
 - With this filtered list, divide the count by the 30 days for a number of deployments per day
 - Then translate this result to friendly n days/weeks/months. 

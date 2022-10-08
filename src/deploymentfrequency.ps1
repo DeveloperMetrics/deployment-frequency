@@ -369,21 +369,20 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
     $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
-    "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
-    "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
-    "**Details**:`n" + 
-    "- Repository: $repo using $branch branch`n" + 
-    "- Workflow(s) used: $($workflowNames -join ", ")`n" +
-    "- Active days of deployment: $numberOfUniqueDates days`n" + 
-    "---"
-
+        "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
+        "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
+        "**Details**:`n" + 
+        "- Repository: $repo using $branch branch`n" + 
+        "- Workflow(s) used: $($workflowNames -join ", ")`n" +
+        "- Active days of deployment: $numberOfUniqueDates days`n" + 
+        "---"
     return $markdown
 }
 
 function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
 {
     $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n" +
-        "no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days`n" + 
+        "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n" + 
         "---"
     return $markdown
 }

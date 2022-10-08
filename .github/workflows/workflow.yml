@@ -44,13 +44,13 @@ jobs:
       #   uses: ./ # the ./ runs the action.yml in this repo 
       #   with:
       #     workflows: 'CI'
-      # - name: Test another repo with all arguments
-      #   uses: ./
-      #   with:
-      #     workflows: 'CI/CD'
-      #     owner-repo: 'samsmithnz/DevOpsMetrics'
-      #     default-branch: 'main'
-      #     number-of-days: 30
+      - name: Test another repo with all arguments
+        uses: ./
+        with:
+          workflows: 'CI/CD'
+          owner-repo: 'samsmithnz/DevOpsMetrics'
+          default-branch: 'main'
+          number-of-days: 30
       - name: Test no workflow
         uses: ./
         with:
@@ -59,12 +59,12 @@ jobs:
           show-verbose-logging: 1
 
       #authenication tests          
-      # - name: Test elite repo with PAT Token
-      #   uses: ./
-      #   with:
-      #     workflows: 'Feature Flags CI/CD'
-      #     owner-repo: 'samsmithnz/SamsFeatureFlags'
-      #     pat-token: "${{ secrets.PATTOKEN }}"          
+      - name: Test elite repo with PAT Token
+        uses: ./
+        with:
+          workflows: 'Feature Flags CI/CD'
+          owner-repo: 'samsmithnz/SamsFeatureFlags'
+          pat-token: "${{ secrets.PATTOKEN }}"          
       # - name: Test elite repo, multiple workflows, with PAT Token
       #   uses: ./
       #   with:

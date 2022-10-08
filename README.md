@@ -12,7 +12,7 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 - As the cost is relatively low (1 Rest API call to GitHub), a result is typically returned in 5-10s.
 
 ## Current Limitations
-- Only looks at the last 100 workflows. If deployments to the target branch is low, this will skew the result
+- Only looks at the last 100 completed workflows. If number of deployments to the target branch is low, this will skew the result. 
 
 ## Inputs
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` 

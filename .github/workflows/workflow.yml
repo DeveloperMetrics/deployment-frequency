@@ -38,6 +38,8 @@ jobs:
         uses: actions/checkout@v3
         with: 
           ref: ${{ github.ref }}
+
+      #basic tests
       - name: Test this repo
         uses: ./ # the ./ runs the action.yml in this repo 
         with:
@@ -49,18 +51,22 @@ jobs:
           owner-repo: 'samsmithnz/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
+          show-verbose-logging: 0
       - name: Test no workflow
         uses: ./
         with:
           workflows: ''
           owner-repo: 'samsmithnz/GitHubToAzureDevOps'
-          
+          show-verbose-logging: 0
+
+      #authenication tests          
       - name: Test elite repo with PAT Token
         uses: ./
         with:
           workflows: 'Feature Flags CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags'
-          pat-token: "${{ secrets.PATTOKEN }}"          
+          pat-token: "${{ secrets.PATTOKEN }}"    
+          show-verbose-logging: 0      
       - name: Test elite repo, multiple workflows, with PAT Token
         uses: ./
         with:

@@ -8,7 +8,8 @@ Param(
     [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $appPrivateKey = ""
+    [string] $appPrivateKey = "",
+    [bool] $showVerboseLogging = $false
 )
 
 #The main function
@@ -20,7 +21,8 @@ function Main ([string] $ownerRepo,
     [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $appPrivateKey = "")
+    [string] $appPrivateKey = "",
+    [bool] $showVerboseLogging = $false)
 {
 
     #==========================================
@@ -28,16 +30,20 @@ function Main ([string] $ownerRepo,
     $ownerRepoArray = $ownerRepo -split '/'
     $owner = $ownerRepoArray[0]
     $repo = $ownerRepoArray[1]
-    Write-Output "Owner/Repo: $owner/$repo"
     $workflowsArray = $workflows -split ','
-    Write-Output "Workflows: $workflows"
-    Write-Output "Branch: $branch"
-    $numberOfDays = $numberOfDays        
-    Write-Output "Number of days: $numberOfDays"
+    $numberOfDays = $numberOfDays    
+    #Write-Output "showVerboseLogging: $showVerboseLogging"    
+    if ($showVerboseLogging -eq $true)
+    {
+        Write-Output "Owner/Repo: $owner/$repo"
+        Write-Output "Workflows: $workflows"
+        Write-Output "Branch: $branch"
+        Write-Output "Number of days: $numberOfDays"
+    }
 
     #==========================================
     # Get authorization headers  
-    $authHeader = GetAuthHeader $patToken $actionsToken $appId $appInstallationId $appPrivateKey
+    $authHeader = GetAuthHeader $patToken $actionsToken $appId $appInstallationId $appPrivateKey $showVerboseLogging
 
     #==========================================
     #Get workflow definitions from github
@@ -61,22 +67,26 @@ function Main ([string] $ownerRepo,
 
     #Extract workflow ids from the definitions, using the array of names. Number of Ids should == number of workflow names
     $workflowIds = [System.Collections.ArrayList]@()
+    $workflowNames = [System.Collections.ArrayList]@()
     Foreach ($workflow in $workflowsResponse.workflows){
 
         Foreach ($arrayItem in $workflowsArray){
             if ($workflow.name -eq $arrayItem)
             {
-                #Write-Output "'$($workflow.name)' matched with $arrayItem"
-                $result = $workflowIds.Add($workflow.id)
-                if ($result -lt 0)
+                #This looks odd: but assigning to a (throwaway) variable stops the index of the arraylist being output to the console. Using an arraylist over an array has advantages making this worth it for here
+                if (!$workflowIds.Contains($workflow.id))
                 {
-                    Write-Output "unexpected result"
+                    $result = $workflowIds.Add($workflow.id)
+                }
+                if (!$workflowNames.Contains($workflow.name))
+                {
+                    $result = $workflowNames.Add($workflow.name)
                 }
             }
-            else 
-            {
-                #Write-Output "'$($workflow.name)' DID NOT match with $arrayItem"
-            }
+            # else 
+            # {
+            #     Write-Output "'$($workflow.name)' DID NOT match with $arrayItem"
+            # }
         }
     }
 
@@ -149,8 +159,10 @@ function Main ([string] $ownerRepo,
     {
         $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
     }    
-    Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
-
+    if ($showVerboseLogging -eq $true)
+    {
+        Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
+    }
 
     #==========================================
     #Calculate deployments per day
@@ -230,22 +242,22 @@ function Main ([string] $ownerRepo,
 
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
-        Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
-        return Format-OutputMarkdown -workflowIds $workflowIds -displayMetric $displayMetric -displayUnit $displayUnit -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
-
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+        }
+        return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }
     else
     {
-        $output = "Deployment frequency: no data to display for this workflow and time period"
-        Write-Output $output
-        return $output
+        return Format-NoOutputMarkdown -workflows $workflows -numberOfDays $numberOfDays
     }
 }
 
 #Generate the authorization header for the PowerShell call to the GitHub API
 #warning: PowerShell has really wacky return semantics - all output is captured, and returned
 #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $appPrivateKey) 
+function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $appPrivateKey, [bool] $showVerboseLogging = $false) 
 {
     #Clean the string - without this the PAT TOKEN doesn't process
     $patToken = $patToken.Trim()
@@ -255,24 +267,36 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
     #Write-Host "patToken is something: $(![string]::IsNullOrEmpty($patToken))"
     if (![string]::IsNullOrEmpty($patToken))
     {
-        Write-Host "Authentication detected: PAT TOKEN"
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Host "Authentication detected: PAT TOKEN"
+        }
         $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$patToken"))
         $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
     }
     elseif (![string]::IsNullOrEmpty($actionsToken))
     {
-        Write-Host "Authentication detected: GITHUB TOKEN"  
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Host "Authentication detected: GITHUB TOKEN"  
+        }
         $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
     }
     elseif (![string]::IsNullOrEmpty($appId)) # GitHup App auth
     {
-        Write-Host "Authentication detected: GITHUB APP TOKEN"  
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Host "Authentication detected: GITHUB APP TOKEN"  
+        }
         $token = Get-JwtToken $appId $appInstallationId $appPrivateKey        
         $authHeader = @{Authorization=("token {0}" -f $token)}
     }    
     else
     {
-        Write-Host "No authentication detected" 
+        if ($showVerboseLogging -eq $true)
+        {
+            Write-Host "No authentication detected" 
+        }
         $base64AuthInfo = $null
         $authHeader = $null
     }
@@ -340,19 +364,27 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 }
 
 # Format output for deployment frequency in markdown
-function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
+function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $repo, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
-    $workflowNames = $workflowIds -join ", "
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
-    $markdown = "## DORA Metric: Deployment Frequency`r`n" +
-    "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
-    "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
-    "**Results:** Deployment frequency over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a DORA rating of **$rating**.`n" +
-    "- Workflow(s) used: $workflowNames`n" +
-    "- Active days of deployment: $numberOfUniqueDates days`n"
-
+    $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
+        "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
+        "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
+        "**Details**:`n" + 
+        "- Repository: $repo using $branch branch`n" + 
+        "- Workflow(s) used: $($workflowNames -join ", ")`n" +
+        "- Active days of deployment: $numberOfUniqueDates days`n" + 
+        "---"
     return $markdown
 }
 
-main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey
+function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
+{
+    $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n`n" +
+        "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n`n" + 
+        "---"
+    return $markdown
+}
+
+main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey -showVerboseLogging $showVerboseLogging

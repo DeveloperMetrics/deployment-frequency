@@ -339,7 +339,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 {
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
-    $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`n" +
+    $markdown = "`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`n" +
         "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
         "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
         "**Details**:`n" + 
@@ -352,7 +352,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 
 function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
 {
-    $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`n`n" +
+    $markdown = "`n![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`n`n" +
         "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n`n" + 
         "---"
     return $markdown

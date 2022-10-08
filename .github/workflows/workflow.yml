@@ -51,12 +51,12 @@ jobs:
       #     owner-repo: 'samsmithnz/DevOpsMetrics'
       #     default-branch: 'main'
       #     number-of-days: 30
-      # - name: Test no workflow
-      #   uses: ./
-      #   with:
-      #     workflows: ''
-      #     owner-repo: 'samsmithnz/GitHubToAzureDevOps'
-      #     show-verbose-logging: 1
+      - name: Test no workflow
+        uses: ./
+        with:
+          workflows: ''
+          owner-repo: 'samsmithnz/GitHubToAzureDevOps'
+          show-verbose-logging: 1
 
       #authenication tests          
       # - name: Test elite repo with PAT Token

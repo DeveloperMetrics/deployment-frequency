@@ -87,7 +87,3 @@ Authentication detected: GITHUB APP TOKEN
 Rate limit consumption: 10 / 5000
 Deployment frequency over last 30 days, is 1.2 per day, with a DORA rating of 'Elite'
 ```
-
-![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)
-**Results:** No data to display for samsmithnz/deployment-frequency for workflow(s) CI over the last 30 days
----

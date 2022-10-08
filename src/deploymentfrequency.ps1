@@ -31,14 +31,13 @@ function Main ([string] $ownerRepo,
     $owner = $ownerRepoArray[0]
     $repo = $ownerRepoArray[1]
     $workflowsArray = $workflows -split ','
-    $numberOfDays = $numberOfDays    
-    #Write-Output "showVerboseLogging: $showVerboseLogging"    
+    $numberOfDays = $numberOfDays       
     if ($showVerboseLogging -eq $true)
     {
-        Write-Output "Owner/Repo: $owner/$repo"
-        Write-Output "Workflows: $workflows"
-        Write-Output "Branch: $branch"
-        Write-Output "Number of days: $numberOfDays"
+        Write-Host "Owner/Repo: $owner/$repo"
+        Write-Host "Workflows: $workflows"
+        Write-Host "Branch: $branch"
+        Write-Host "Number of days: $numberOfDays"
     }
 
     #==========================================
@@ -83,10 +82,6 @@ function Main ([string] $ownerRepo,
                     $result = $workflowNames.Add($workflow.name)
                 }
             }
-            # else 
-            # {
-            #     Write-Output "'$($workflow.name)' DID NOT match with $arrayItem"
-            # }
         }
     }
 
@@ -114,7 +109,7 @@ function Main ([string] $ownerRepo,
             #Count workflows that are completed, on the target branch, and were created within the day range we are looking at
             if ($run.head_branch -eq $branch -and $run.created_at -gt (Get-Date).AddDays(-$numberOfDays))
             {
-                #Write-Output "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
+                #Write-Host "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
                 $buildTotal++       
                 #get the workflow start and end time            
                 $dateList += New-Object PSObject -Property @{start_datetime=$run.created_at;end_datetime=$run.updated_at}
@@ -133,11 +128,10 @@ function Main ([string] $ownerRepo,
                 $deploymentsPerDay = $dateList.Count / $numberOfDays
             }
             $deploymentsPerDayList += $deploymentsPerDay
-            #Write-Output "Adding to list, workflow id $workflowId deployments per day of $deploymentsPerDay"
+            #Write-Host "Adding to list, workflow id $workflowId deployments per day of $deploymentsPerDay"
         }
     }
 
-    #Write-Output "Total items in list is $($deploymentsPerDayList.Length)"
     $totalDeployments = 0
     Foreach ($deploymentItem in $deploymentsPerDayList){
         $totalDeployments += $deploymentItem
@@ -146,7 +140,7 @@ function Main ([string] $ownerRepo,
     {
         $deploymentsPerDay = $totalDeployments / $deploymentsPerDayList.Length
     }
-    #Write-Output "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
+    #Write-Host "Total deployments $totalDeployments with a final deployments value of $deploymentsPerDay"
 
     #==========================================
     #Show current rate limit
@@ -161,7 +155,7 @@ function Main ([string] $ownerRepo,
     }    
     if ($showVerboseLogging -eq $true)
     {
-        Write-Output "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
+        Write-Host "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
     }
 
     #==========================================
@@ -244,7 +238,7 @@ function Main ([string] $ownerRepo,
     {
         if ($showVerboseLogging -eq $true)
         {
-            Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
+            Write-Host "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
         }
         return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }

@@ -14,11 +14,8 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 ## Current Limitations
 - Only looks at the last 100 workflows. If deployments to the target branch is low, this will skew the result
 
-## Open questions
-- what do to when there are multiple workflows?
-
 ## Inputs
-- `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` (note that currently only the first workflow in the string is processed)
+- `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` 
 - `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'samsmithnz/DevOpsMetrics'`, but will require authenication (see below)
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)

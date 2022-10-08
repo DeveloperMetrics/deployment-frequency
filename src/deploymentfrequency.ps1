@@ -75,10 +75,10 @@ function Main ([string] $ownerRepo,
                 #This looks odd: but assigning to a (throwaway) variable stops the index of the array being output to the console
                 $result = $workflowIds.Add($workflow.id)
             }
-            else 
-            {
-                #Write-Output "'$($workflow.name)' DID NOT match with $arrayItem"
-            }
+            # else 
+            # {
+            #     Write-Output "'$($workflow.name)' DID NOT match with $arrayItem"
+            # }
         }
     }
 

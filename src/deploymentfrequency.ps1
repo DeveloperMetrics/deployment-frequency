@@ -385,7 +385,7 @@ function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
     $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n" +
         "no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days`n" + 
         "---"
-    return markdown
+    return $markdown
 }
 
 main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey -showVerboseLogging $showVerboseLogging

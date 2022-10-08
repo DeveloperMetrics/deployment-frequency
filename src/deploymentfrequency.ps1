@@ -249,7 +249,7 @@ function Main ([string] $ownerRepo,
     {
         $output = "Deployment frequency: no data to display for this workflow and time period"
         Write-Output $output
-        return $output
+        return "---" # just return a markdown separator - so that we don't duplicate the write-output message
     }
 }
 

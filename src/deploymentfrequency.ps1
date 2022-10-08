@@ -231,7 +231,7 @@ function Main ([string] $ownerRepo,
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
         Write-Output "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
-        return Format-OutputMarkdown -workflowIds $workflowIds -displayMetric $displayMetric -displayUnit $displayUnit -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
+        return Format-OutputMarkdown -workflowIds $workflowIds -displayMetric $displayMetric -displayUnit $displayUnit -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
 
     }
     else
@@ -340,7 +340,7 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 }
 
 # Format output for deployment frequency in markdown
-function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
+function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
     $workflowNames = $workflowIds -join ", "
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
@@ -348,7 +348,7 @@ function Format-OutputMarkdown([array] $workflowIds, [string] $rating, [string] 
     $markdown = "## DORA Metric: Deployment Frequency`r`n" +
     "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
     "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
-    "**Results:** Deployment frequency over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a DORA rating of **$rating**.`n" +
+    "**Results:** Deployment frequency for **$branch** branch, over last **$numberOfDays days** is **$displayMetric $displayUnit**, with a DORA rating of **$rating**.`n" +
     "- Workflow(s) used: $workflowNames`n" +
     "- Active days of deployment: $numberOfUniqueDates days`n"
 

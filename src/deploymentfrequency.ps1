@@ -338,7 +338,7 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $repo, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
-
+    #double newline to start the line helps with formatting in GitHub logs
     $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`n" +
         "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
         "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
@@ -352,6 +352,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 
 function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
 {
+    #double newline to start the line helps with formatting in GitHub logs
     $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`n`n" +
         "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n`n" + 
         "---"

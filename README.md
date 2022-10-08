@@ -24,7 +24,6 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 - `app-id`: optional, string, defaults to '', application id of the registered GitHub app
 - `app-install-id`: optional, string, defaults to '', id of the installed instance of the GitHub app
 - `app-private-key`: optional, string, defaults to '', private key which has been generated for the installed instance of the GitHub app. Must be provided without leading `'-----BEGIN RSA PRIVATE KEY----- '` and trailing `' -----END RSA PRIVATE KEY-----'`.
-- `show-verbose-logging`: optional, bool, defaults to 0, if set to 1, will show more verbose logging information
 
 To test the current repo (same as where the action runs)
 ```

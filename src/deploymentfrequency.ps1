@@ -8,8 +8,7 @@ Param(
     [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $appPrivateKey = "",
-    [bool] $showVerboseLogging = $false
+    [string] $appPrivateKey = ""
 )
 
 #The main function
@@ -21,8 +20,7 @@ function Main ([string] $ownerRepo,
     [string] $actionsToken = "",
     [string] $appId = "",
     [string] $appInstallationId = "",
-    [string] $appPrivateKey = "",
-    [bool] $showVerboseLogging = $false)
+    [string] $appPrivateKey = "")
 {
 
     #==========================================
@@ -32,17 +30,14 @@ function Main ([string] $ownerRepo,
     $repo = $ownerRepoArray[1]
     $workflowsArray = $workflows -split ','
     $numberOfDays = $numberOfDays       
-    if ($showVerboseLogging -eq $true)
-    {
-        Write-Host "Owner/Repo: $owner/$repo"
-        Write-Host "Workflows: $workflows"
-        Write-Host "Branch: $branch"
-        Write-Host "Number of days: $numberOfDays"
-    }
+    Write-Host "Owner/Repo: $owner/$repo"
+    Write-Host "Workflows: $workflows"
+    Write-Host "Branch: $branch"
+    Write-Host "Number of days: $numberOfDays"
 
     #==========================================
     # Get authorization headers  
-    $authHeader = GetAuthHeader $patToken $actionsToken $appId $appInstallationId $appPrivateKey $showVerboseLogging
+    $authHeader = GetAuthHeader $patToken $actionsToken $appId $appInstallationId $appPrivateKey
 
     #==========================================
     #Get workflow definitions from github
@@ -153,10 +148,7 @@ function Main ([string] $ownerRepo,
     {
         $rateLimitResponse = Invoke-RestMethod -Uri $uri3 -ContentType application/json -Method Get -Headers @{Authorization=($authHeader["Authorization"])} -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
     }    
-    if ($showVerboseLogging -eq $true)
-    {
-        Write-Host "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"
-    }
+    Write-Host "Rate limit consumption: $($rateLimitResponse.rate.used) / $($rateLimitResponse.rate.limit)"    
 
     #==========================================
     #Calculate deployments per day
@@ -236,10 +228,7 @@ function Main ([string] $ownerRepo,
 
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
-        if ($showVerboseLogging -eq $true)
-        {
-            Write-Host "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"
-        }
+        Write-Host "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"        
         return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }
     else
@@ -251,7 +240,7 @@ function Main ([string] $ownerRepo,
 #Generate the authorization header for the PowerShell call to the GitHub API
 #warning: PowerShell has really wacky return semantics - all output is captured, and returned
 #reference: https://stackoverflow.com/questions/10286164/function-return-value-in-powershell
-function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $appPrivateKey, [bool] $showVerboseLogging = $false) 
+function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $appId, [string] $appInstallationId, [string] $appPrivateKey) 
 {
     #Clean the string - without this the PAT TOKEN doesn't process
     $patToken = $patToken.Trim()
@@ -261,36 +250,24 @@ function GetAuthHeader ([string] $patToken, [string] $actionsToken, [string] $ap
     #Write-Host "patToken is something: $(![string]::IsNullOrEmpty($patToken))"
     if (![string]::IsNullOrEmpty($patToken))
     {
-        if ($showVerboseLogging -eq $true)
-        {
-            Write-Host "Authentication detected: PAT TOKEN"
-        }
+        Write-Host "Authentication detected: PAT TOKEN"
         $base64AuthInfo = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$patToken"))
         $authHeader = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
     }
     elseif (![string]::IsNullOrEmpty($actionsToken))
     {
-        if ($showVerboseLogging -eq $true)
-        {
-            Write-Host "Authentication detected: GITHUB TOKEN"  
-        }
+        Write-Host "Authentication detected: GITHUB TOKEN"  
         $authHeader = @{Authorization=("Bearer {0}" -f $base64AuthInfo)}
     }
     elseif (![string]::IsNullOrEmpty($appId)) # GitHup App auth
     {
-        if ($showVerboseLogging -eq $true)
-        {
-            Write-Host "Authentication detected: GITHUB APP TOKEN"  
-        }
+        Write-Host "Authentication detected: GITHUB APP TOKEN"  
         $token = Get-JwtToken $appId $appInstallationId $appPrivateKey        
         $authHeader = @{Authorization=("token {0}" -f $token)}
     }    
     else
     {
-        if ($showVerboseLogging -eq $true)
-        {
-            Write-Host "No authentication detected" 
-        }
+        Write-Host "No authentication detected" 
         $base64AuthInfo = $null
         $authHeader = $null
     }
@@ -362,7 +339,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 {
     $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
 
-    $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
+    $markdown = "`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`r`n" +
         "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
         "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
         "**Details**:`n" + 
@@ -375,10 +352,10 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
 
 function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
 {
-    $markdown = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n`n" +
+    $markdown = "`n![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`r`n`n" +
         "No data to display for $ownerRepo for workflow(s) $workflows over the last $numberOfDays days`n`n" + 
         "---"
     return $markdown
 }
 
-main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey -showVerboseLogging $showVerboseLogging
+main -ownerRepo $ownerRepo -workflows $workflows -branch $branch -numberOfDays $numberOfDays -patToken $patToken -actionsToken $actionsToken -appId $appId -appInstallationId $appInstallationId -appPrivateKey $appPrivateKey

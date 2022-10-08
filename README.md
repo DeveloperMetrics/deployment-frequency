@@ -76,7 +76,7 @@ Gather the metric from another repository using GitHub App authentication method
 
 # Output
 
-Current output shows the inputs, authenication method, rate limit consumption, and then the actual deployment frequency
+Current output to the log shows the inputs, authenication method, rate limit consumption, and then the actual deployment frequency
 ```
 Owner/Repo: samsmithnz/SamsFeatureFlags
 Workflows: Feature Flags CI/CD
@@ -86,3 +86,6 @@ Authentication detected: GITHUB APP TOKEN
 Rate limit consumption: 10 / 5000
 Deployment frequency over last 30 days, is 1.2 per day, with a DORA rating of 'Elite'
 ```
+
+In the job summary, we show a badge with details:
+![image](https://user-images.githubusercontent.com/8389039/194720101-8fe50812-a721-46e7-b4ab-69f391aa496c.png)

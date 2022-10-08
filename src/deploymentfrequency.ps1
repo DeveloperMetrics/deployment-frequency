@@ -251,7 +251,7 @@ function Main ([string] $ownerRepo,
     else
     {
         $output = "![Deployment Frequency](https://img.shields.io/badge/frequency-none-gray?logo=github&label=Deployment%20frequency)`r`n" +
-            "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days"`n" + 
+            "Deployment frequency: no data to display for $ownerRepo for workflow(s) $workflows and the last $numberOfDays days`n" + 
             "---"
         return $output
     }

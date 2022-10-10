@@ -169,11 +169,7 @@ function Main ([string] $ownerRepo,
     $everySixMonthsDeployment = 1 / (6 * 30) #Every 6 months
     $yearlyDeployment = 1 / 365
 
-    #Calculate rating 
-    $rating = ""
-    $color = ""
-
-    #Calculate metric and unit
+    #Calculate rating, metric, and unit
     if ($deploymentsPerDay -le 0)
     {
         $rating = "None"

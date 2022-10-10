@@ -169,59 +169,46 @@ function Main ([string] $ownerRepo,
     $everySixMonthsDeployment = 1 / (6 * 30) #Every 6 months
     $yearlyDeployment = 1 / 365
 
-    #Calculate rating 
-    $rating = ""
-    $color = ""
-
+    #Calculate rating, metric, and unit
     if ($deploymentsPerDay -le 0)
     {
         $rating = "None"
-        $color = "grey"
+        $color = "lightgrey"
+        $displayMetric = 0
+        $displayUnit = "per day"
     }
-    elseif ($deploymentsPerDay -ge $dailyDeployment)
+    elseif ($deploymentsPerDay -gt $dailyDeployment) 
     {
         $rating = "Elite"
         $color = "green"
-    }
-    elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
-    {
-        $rating = "High"
-        $color = "green"
-    }
-    elseif (deploymentsPerDay -le $monthlyDeployment -and $deploymentsPerDay -ge $everySixMonthsDeployment)
-    {
-        $rating = "Medium"
-        $color = "yellow"
-    }
-    elseif ($deploymentsPerDay -le $everySixMonthsDeployment)
-    {
-        $rating = "Low"
-        $color = "red"
-    }
-
-    #Calculate metric and unit
-    if ($deploymentsPerDay -gt $dailyDeployment) 
-    {
         $displayMetric = [math]::Round($deploymentsPerDay,2)
         $displayUnit = "per day"
     }
     elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $weeklyDeployment)
     {
+        $rating = "High"
+        $color = "green"
         $displayMetric = [math]::Round($deploymentsPerDay * 7,2)
         $displayUnit = "times per week"
     }
     elseif ($deploymentsPerDay -lt $weeklyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
     {
+        $rating = "Medium"
+        $color = "yellow"
         $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
         $displayUnit = "times per month"
     }
     elseif ($deploymentsPerDay -lt $monthlyDeployment -and $deploymentsPerDay -gt $yearlyDeployment)
     {
+        $rating = "Low"
+        $color = "red"
         $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
         $displayUnit = "times per month"
     }
     elseif ($deploymentsPerDay -le $yearlyDeployment)
     {
+        $rating = "Low"
+        $color = "red"
         $displayMetric = [math]::Round($deploymentsPerDay * 365,2)
         $displayUnit = "times per year"
     }
@@ -229,11 +216,11 @@ function Main ([string] $ownerRepo,
     if ($dateList.Count -gt 0 -and $numberOfDays -gt 0)
     {
         Write-Host "Deployment frequency over last $numberOfDays days, is $displayMetric $displayUnit, with a DORA rating of '$rating'"        
-        return Format-OutputMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
+        return GetFormattedMarkdown -workflowNames $workflowNames -displayMetric $displayMetric -displayUnit $displayUnit -repo $ownerRepo -branch $branch -numberOfDays $numberOfDays -numberOfUniqueDates $uniqueDates.Length.ToString() -color $color -rating $rating
     }
     else
     {
-        return Format-NoOutputMarkdown -workflows $workflows -numberOfDays $numberOfDays
+        return GetFormattedMarkdownForNoResult -workflows $workflows -numberOfDays $numberOfDays
     }
 }
 
@@ -335,11 +322,11 @@ function Get-JwtToken([string] $appId, [string] $appInstallationId, [string] $ap
 }
 
 # Format output for deployment frequency in markdown
-function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $repo, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
+function GetFormattedMarkdown([array] $workflowNames, [string] $rating, [string] $displayMetric, [string] $displayUnit, [string] $repo, [string] $branch, [string] $numberOfDays, [string] $numberOfUniqueDates, [string] $color)
 {
-    $encodedDeploymentFrequency = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
+    $encodedString = [uri]::EscapeUriString($displayMetric + " " + $displayUnit)
     #double newline to start the line helps with formatting in GitHub logs
-    $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedDeploymentFrequency + "-" + $color + "?logo=github&label=Deployment%20frequency)`n" +
+    $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-" + $encodedString + "-" + $color + "?logo=github&label=Deployment%20frequency)`n" +
         "**Definition:** For the primary application or service, how often is it successfully deployed to production.`n" +
         "**Results:** Deployment frequency is **$displayMetric $displayUnit** with a **$rating** rating, over the last **$numberOfDays days**.`n" + 
         "**Details**:`n" + 
@@ -350,7 +337,7 @@ function Format-OutputMarkdown([array] $workflowNames, [string] $rating, [string
     return $markdown
 }
 
-function Format-NoOutputMarkdown([string] $workflows, [string] $numberOfDays)
+function GetFormattedMarkdownForNoResult([string] $workflows, [string] $numberOfDays)
 {
     #double newline to start the line helps with formatting in GitHub logs
     $markdown = "`n`n![Deployment Frequency](https://img.shields.io/badge/frequency-none-lightgrey?logo=github&label=Deployment%20frequency)`n`n" +

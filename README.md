@@ -88,6 +88,7 @@ Deployment frequency over last 30 days, is 1.2 per day, with a DORA rating of 'E
 ```
 
 In the job summary, we show a badge with details:
+
  ---
  ![Deployment Frequency](https://img.shields.io/badge/frequency-4.67%20times%20per%20week-green?logo=github&label=Deployment%20frequency)<br>
   **Definition:** For the primary application or service, how often is it successfully deployed to production.<br>

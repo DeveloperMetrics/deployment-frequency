@@ -180,7 +180,7 @@ function Main ([string] $ownerRepo,
     elseif ($deploymentsPerDay -gt $dailyDeployment) 
     {
         $rating = "Elite"
-        $color = "green"
+        $color = "brightgreen"
         $displayMetric = [math]::Round($deploymentsPerDay,2)
         $displayUnit = "per day"
     }

@@ -173,55 +173,46 @@ function Main ([string] $ownerRepo,
     $rating = ""
     $color = ""
 
+    #Calculate metric and unit
     if ($deploymentsPerDay -le 0)
     {
         $rating = "None"
-        $color = "grey"
+        $color = "lightgrey"
+        $displayMetric = 0
+        $displayUnit = "per day"
     }
-    elseif ($deploymentsPerDay -ge $dailyDeployment)
+    elseif ($deploymentsPerDay -gt $dailyDeployment) 
     {
         $rating = "Elite"
         $color = "green"
-    }
-    elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
-    {
-        $rating = "High"
-        $color = "green"
-    }
-    elseif (deploymentsPerDay -le $monthlyDeployment -and $deploymentsPerDay -ge $everySixMonthsDeployment)
-    {
-        $rating = "Medium"
-        $color = "yellow"
-    }
-    elseif ($deploymentsPerDay -le $everySixMonthsDeployment)
-    {
-        $rating = "Low"
-        $color = "red"
-    }
-
-    #Calculate metric and unit
-    if ($deploymentsPerDay -gt $dailyDeployment) 
-    {
         $displayMetric = [math]::Round($deploymentsPerDay,2)
         $displayUnit = "per day"
     }
     elseif ($deploymentsPerDay -le $dailyDeployment -and $deploymentsPerDay -ge $weeklyDeployment)
     {
+        $rating = "High"
+        $color = "green"
         $displayMetric = [math]::Round($deploymentsPerDay * 7,2)
         $displayUnit = "times per week"
     }
     elseif ($deploymentsPerDay -lt $weeklyDeployment -and $deploymentsPerDay -ge $monthlyDeployment)
     {
+        $rating = "Medium"
+        $color = "yellow"
         $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
         $displayUnit = "times per month"
     }
     elseif ($deploymentsPerDay -lt $monthlyDeployment -and $deploymentsPerDay -gt $yearlyDeployment)
     {
+        $rating = "Low"
+        $color = "red"
         $displayMetric = [math]::Round($deploymentsPerDay * 30,2)
         $displayUnit = "times per month"
     }
     elseif ($deploymentsPerDay -le $yearlyDeployment)
     {
+        $rating = "Low"
+        $color = "red"
         $displayMetric = [math]::Round($deploymentsPerDay * 365,2)
         $displayUnit = "times per year"
     }

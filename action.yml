@@ -1,5 +1,6 @@
 name: 'DORA deployment frequency'
 description: 'A GitHub Action to roughly calculate DORA deployment frequency'
+author: developermetrics.org 
 branding:
   icon: activity
   color: gray-dark

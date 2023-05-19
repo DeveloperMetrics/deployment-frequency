@@ -1,5 +1,8 @@
 name: 'DORA deployment frequency'
 description: 'A GitHub Action to roughly calculate DORA deployment frequency'
+branding:
+  icon: activity
+  color: gray-dark
 inputs:
   workflows: # required. string array of the name of the workflows to process
     description: the workflow name that is being scanned. Separate multiple workflows with commas

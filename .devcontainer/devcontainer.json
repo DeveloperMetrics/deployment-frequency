@@ -20,5 +20,12 @@
 	"remoteUser": "vscode",
 	"features": {
 		"powershell": "latest"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot-labs"
+			]
+		}
 	}
 }

@@ -9,3 +9,9 @@ updates:
     timezone: America/New_York
   assignees:
   - "samsmithnz"
+  open-pull-requests-limit: 10
+  groups:
+    actions:
+      patterns: ["*"]
+      update-types: ["minor", "patch"]
+  

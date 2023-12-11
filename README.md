@@ -1,8 +1,8 @@
 # Deployment Frequency
 A GitHub Action to roughly calculate DORA deployment frequency. This is not meant to be an exhaustive calculation, but we are able to approximate fairly close for most  of workflows. Why? Our [insights](https://samlearnsazure.blog/2022/08/23/my-insights-about-measuring-dora-devops-metrics-and-how-you-can-learn-from-my-mistakes/) indicated that many applications don't need exhaustive DORA analysis - a high level, order of magnitude result is accurate for most workloads. 
 
-[![CI](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml/badge.svg)](https://github.com/samsmithnz/deployment-frequency/actions/workflows/workflow.yml)
-[![Current Release](https://img.shields.io/github/release/samsmithnz/deployment-frequency/all.svg)](https://github.com/samsmithnz/deployment-frequency/releases)
+[![CI](https://github.com/DeveloperMetrics/deployment-frequency/actions/workflows/workflow.yml/badge.svg)](https://github.com/DeveloperMetrics/deployment-frequency/actions/workflows/workflow.yml)
+[![Current Release](https://img.shields.io/github/release/DeveloperMetrics/deployment-frequency/all.svg)](https://github.com/DeveloperMetrics/deployment-frequency/releases)
 
 ## Current Calculation
 - Get the last 100 completed workflows
@@ -16,7 +16,7 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 
 ## Inputs
 - `workflows`: required, string, The name of the workflows to process. Multiple workflows can be separated by `,` 
-- `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'samsmithnz/DevOpsMetrics'`, but will require authenication (see below)
+- `owner-repo`: optional, string, defaults to the repo where the action runs. Can target another owner or org and repo. e.g. `'DeveloperMetrics/DevOpsMetrics'`, but will require authenication (see below)
 - `default-branch`: optional, string, defaults to `main` 
 - `number-of-days`: optional, integer, defaults to `30` (days)
 - `pat-token`: optional, string, defaults to ''. Can be set with GitHub PAT token. Ensure that `Read access to actions and metadata` permission is set. This is a secret, never directly add this into the actions workflow, use a secret.
@@ -38,7 +38,7 @@ To test another repo, with all arguments
   uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI/CD'
-    owner-repo: 'samsmithnz/DevOpsMetrics'
+    owner-repo: 'DeveloperMetrics/DevOpsMetrics'
     default-branch: 'main'
     number-of-days: 30
 ```
@@ -68,7 +68,7 @@ Gather the metric from another repository using GitHub App authentication method
   uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI'
-    owner-repo: 'samsmithnz/some-other-repo'
+    owner-repo: 'DeveloperMetrics/some-other-repo'
     app-id: "${{ secrets.APPID }}"
     app-install-id: "${{ secrets.APPINSTALLID }}"
     app-private-key: "${{ secrets.APPPRIVATEKEY }}"
@@ -94,7 +94,7 @@ In the job summary, we show a badge with details:
   **Definition:** For the primary application or service, how often is it successfully deployed to production.<br>
  **Results:** Deployment frequency is **4.67 times per week** with a **High** rating, over the last **30 days**.<br>
  **Details**:<br>
- - Repository: samsmithnz/deployment-frequency using main branch
+ - Repository: DeveloperMetrics/deployment-frequency using main branch
  - Workflow(s) used: CI
  - Active days of deployment: 13 days
  ---

@@ -27,7 +27,7 @@ A GitHub Action to roughly calculate DORA deployment frequency. This is not mean
 
 To test the current repo (same as where the action runs)
 ```
-- uses: samsmithnz/deployment-frequency@main
+- uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI'
 ```
@@ -35,7 +35,7 @@ To test the current repo (same as where the action runs)
 To test another repo, with all arguments
 ```
 - name: Test another repo
-  uses: samsmithnz/deployment-frequency@main
+  uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI/CD'
     owner-repo: 'samsmithnz/DevOpsMetrics'
@@ -46,7 +46,7 @@ To test another repo, with all arguments
 To use a PAT token to access another (potentially private) repo:
 ```
 - name: Test elite repo with PAT Token
-  uses: samsmithnz/deployment-frequency@main
+  uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI/CD'
     owner-repo: 'samsmithnz/SamsFeatureFlags'
@@ -56,7 +56,7 @@ To use a PAT token to access another (potentially private) repo:
 Use the built in Actions GitHub Token to retrieve the metrix 
 ```
 - name: Test this repo with GitHub Token
-  uses: samsmithnz/deployment-frequency@main
+  uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI'
     actions-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -65,7 +65,7 @@ Use the built in Actions GitHub Token to retrieve the metrix
 Gather the metric from another repository using GitHub App authentication method:
 ```
 - name: Test another repo with GitHub App
-  uses: samsmithnz/deployment-frequency@main
+  uses: DeveloperMetrics/deployment-frequency@main
   with:
     workflows: 'CI'
     owner-repo: 'samsmithnz/some-other-repo'

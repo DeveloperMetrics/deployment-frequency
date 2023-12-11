@@ -53,7 +53,7 @@ To use a PAT token to access another (potentially private) repo:
     pat-token: "${{ secrets.PATTOKEN }}"
 ```
 
-Use the built in Actions GitHub Token to retrieve the metrix 
+Use the built in Actions GitHub Token to retrieve the metrics 
 ```
 - name: Test this repo with GitHub Token
   uses: DeveloperMetrics/deployment-frequency@main

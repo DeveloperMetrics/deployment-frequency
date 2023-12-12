@@ -48,7 +48,7 @@ jobs:
         uses: ./
         with:
           workflows: 'CI/CD'
-          owner-repo: 'samsmithnz/DevOpsMetrics'
+          owner-repo: 'DeveloperMetrics/DevOpsMetrics'
           default-branch: 'main'
           number-of-days: 30
       - name: Test no workflow
@@ -77,7 +77,7 @@ jobs:
           owner-repo: 'samsmithnz/SamsFeatureFlags'
           pat-token: "INVALIDPATTOKEN"
       - name: Test unknown repo 
-        uses: samsmithnz/deployment-frequency@main
+        uses: DeveloperMetrics/deployment-frequency@main
         with:
           workflows: 'CI/CD'
           owner-repo: 'samsmithnz/SamsFeatureFlags2'

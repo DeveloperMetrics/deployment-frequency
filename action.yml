@@ -35,13 +35,19 @@ inputs:
   app-private-key:
     description: 'private key which has been generated for the installed instance of the GitHub app'
     default: ""
+outputs:
+  markdown-file:
+    description: "The markdown that will be posted to the job summary, so that the markdown can saved and used other places (e.g.: README.md)"
+    value: ${{ steps.deployment-frequency.outputs.markdown-file }}
 runs:
   using: "composite"
   steps:
-    - name: Run DORA deployment frequency 
+    - name: Run DORA deployment frequency
+      id: deployment-frequency
       shell: pwsh
       run: |
          $result = ${{ github.action_path }}/src/deploymentfrequency.ps1 -ownerRepo "${{ inputs.owner-repo }}" -workflows "${{ inputs.workflows }}" -branch "${{ inputs.default-branch }}" -numberOfDays ${{ inputs.number-of-days }} -patToken "${{ inputs.pat-token }}" -actionsToken "${{ inputs.actions-token }}" -appId "${{ inputs.app-id }}" -appInstallationId "${{ inputs.app-install-id }}" -appPrivateKey "${{ inputs.app-private-key }}"
-         #Write-Host "::set-output name=result::$result"
+         $filePath="dora-deployment-frequency-markdown.md"
+         Set-Content -Path $filePath -Value $result
+         "markdown-file=$filePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
          Write-Output $result >> $env:GITHUB_STEP_SUMMARY
-               

@@ -81,7 +81,7 @@ function Main ([string] $ownerRepo,
     }
 
     #==========================================
-    #Filter out workflows that were successful. Measure the number by date/day. Aggegate workflows together
+    #Filter to workflows that were successful. Measure the number by date/day. Aggegate workflows together
     $dateList = @()
     $uniqueDates = @()
     $deploymentsPerDayList = @()
@@ -89,7 +89,7 @@ function Main ([string] $ownerRepo,
     #For each workflow id, get the last 100 workflows from github
     Foreach ($workflowId in $workflowIds){
         #Get workflow definitions from github
-        $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100&status=completed"
+        $uri2 = "https://api.github.com/repos/$owner/$repo/actions/workflows/$workflowId/runs?per_page=100&status=success"
         if (!$authHeader)
         {
             $workflowRunsResponse = Invoke-RestMethod -Uri $uri2 -ContentType application/json -Method Get -SkipHttpErrorCheck -StatusCodeVariable "HTTPStatus"
@@ -101,7 +101,7 @@ function Main ([string] $ownerRepo,
 
         $buildTotal = 0
         Foreach ($run in $workflowRunsResponse.workflow_runs){
-            #Count workflows that are completed, on the target branch, and were created within the day range we are looking at
+            #Count workflows that are successfully completed, on the target branch, and were created within the day range we are looking at
             if ($run.head_branch -eq $branch -and $run.created_at -gt (Get-Date).AddDays(-$numberOfDays))
             {
                 #Write-Host "Adding item with status $($run.status), branch $($run.head_branch), created at $($run.created_at), compared to $((Get-Date).AddDays(-$numberOfDays))"
